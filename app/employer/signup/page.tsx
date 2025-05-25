@@ -5,15 +5,14 @@ import { useRouter } from 'next/navigation'
 import Link from "next/link"
 
 
+
 // Define the form data interface
 interface FormData {
     email: string
     password: string
-    fullName: string
+    employer: string
     phone: string
-    dob: string
     address: string
-    nationality: string
     confirmPassword: string
     agreeTerms: string
 }
@@ -22,16 +21,14 @@ interface FormData {
 const initialFormState: FormData = {
     email: '',
     password: '',
-    fullName: '',
+    employer: '',
     phone: '',
-    dob: '',
     address: '',
-    nationality: '',
     confirmPassword: '',
     agreeTerms: ''
 }
 
-export default function JobSeekerSignup() {
+export default function EmployerSignup() {
     const [formData, setFormData] = useState<FormData>(initialFormState)
     const [errors, setErrors] = useState<Partial<FormData>>({})
     const [isLoading, setIsLoading] = useState(false)
@@ -72,21 +69,15 @@ export default function JobSeekerSignup() {
             newErrors.phone = 'Phone number must be 10 digits'
         }
 
-        if (!formData.fullName) {
-            newErrors.fullName = 'Full name is required'
+        if (!formData.employer) {
+            newErrors.employer = 'Employer name is required'
         }
 
-        if (!formData.dob) {
-            newErrors.dob = 'Date of birth is required'
-        }
 
         if (!formData.address) {
             newErrors.address = 'Address is required'
         }
 
-        if (!formData.nationality) {
-            newErrors.nationality = 'Nationality is required'
-        }
 
         if (!formData.password) {
             newErrors.password = 'Password is required'
@@ -120,7 +111,7 @@ export default function JobSeekerSignup() {
 
         try {
             // Your API call logic here
-            const response = await fetch('/api/job-seeker/signup', {
+            const response = await fetch('/api/employer/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -129,7 +120,7 @@ export default function JobSeekerSignup() {
             })
 
             if (response.ok) {
-                router.push('/job-seeker/login?message=Registration successful')
+                router.push('/employer/login?message=Registration successful')
             } else {
                 const errorData = await response.json()
                 console.error('Registration failed:', errorData)
@@ -155,31 +146,30 @@ export default function JobSeekerSignup() {
                     className="text-5xl font-bold mb-8">
                     <span className="text-blue-700">JOB</span> <span className="text-yellow-400">CONNECT</span>
                 </Link>
-                <h1 >
-                </h1>
+
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                        Create  Account
+                    <h2 className="mt-6 text-2xl font-bold text-gray-900">
+                        Create your Employer account
                     </h2>
                     <form className="space-y-6" onSubmit={handleSubmit}>
-                        {/* Full Name */}
+                        {/* Employer Name */}
                         <div>
-                            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-                                Full Name
+                            <label htmlFor="employer" className="block text-sm font-medium text-gray-700">
+                                Employer
                             </label>
                             <div className="mt-1">
                                 <input
-                                    id="fullName"
-                                    name="fullName"
+                                    id="employer"
+                                    name="employer"
                                     type="text"
-                                    value={formData.fullName}
+                                    value={formData.employer}
                                     onChange={handleInputChange}
                                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 />
-                                {errors.fullName && <p className="mt-2 text-sm text-red-600">{errors.fullName}</p>}
+                                {errors.employer && <p className="mt-2 text-sm text-red-600">{errors.employer}</p>}
                             </div>
                         </div>
 
@@ -219,23 +209,6 @@ export default function JobSeekerSignup() {
                             </div>
                         </div>
 
-                        {/* Date of Birth */}
-                        <div>
-                            <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
-                                Date of Birth
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="dob"
-                                    name="dob"
-                                    type="date"
-                                    value={formData.dob}
-                                    onChange={handleInputChange}
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                />
-                                {errors.dob && <p className="mt-2 text-sm text-red-600">{errors.dob}</p>}
-                            </div>
-                        </div>
 
                         {/* Address */}
                         <div>
@@ -252,24 +225,6 @@ export default function JobSeekerSignup() {
                                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 />
                                 {errors.address && <p className="mt-2 text-sm text-red-600">{errors.address}</p>}
-                            </div>
-                        </div>
-
-                        {/* Nationality */}
-                        <div>
-                            <label htmlFor="nationality" className="block text-sm font-medium text-gray-700">
-                                Nationality
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="nationality"
-                                    name="nationality"
-                                    type="text"
-                                    value={formData.nationality}
-                                    onChange={handleInputChange}
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                />
-                                {errors.nationality && <p className="mt-2 text-sm text-red-600">{errors.nationality}</p>}
                             </div>
                         </div>
 

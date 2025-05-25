@@ -32,7 +32,7 @@ export default function Home() {
               JOB SEEKER
             </Link>
             <Link
-              href="/employer/dashboard"
+              href="/employer/signup"
               className="bg-yellow-400 text-white font-bold py-4 px-12 rounded-full text-xl transition duration-300 hover:opacity-90"
             >
               EMPLOYER
