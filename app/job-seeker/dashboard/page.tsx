@@ -165,7 +165,7 @@ export default function JobSeekerDashboard() {
                       </div>
                       <div className="ml-3">
                         <p className="text-sm font-medium text-gray-900">
-                          Application for <span className="text-indigo-600">Frontend Developer</span> at TechCorp Inc.
+                          Application for <span className="text-blue-600">Frontend Developer</span> at TechCorp Inc.
                           was submitted
                         </p>
                         <p className="text-sm text-gray-500">2 days ago</p>
@@ -183,7 +183,7 @@ export default function JobSeekerDashboard() {
                       </div>
                       <div className="ml-3">
                         <p className="text-sm font-medium text-gray-900">
-                          You viewed <span className="text-indigo-600">UX/UI Designer</span> at DesignHub Co.
+                          You viewed <span className="text-blue-600">UX/UI Designer</span> at DesignHub Co.
                         </p>
                         <p className="text-sm text-gray-500">3 days ago</p>
                       </div>
@@ -200,7 +200,7 @@ export default function JobSeekerDashboard() {
                       </div>
                       <div className="ml-3">
                         <p className="text-sm font-medium text-gray-900">
-                          Interview scheduled for <span className="text-indigo-600">Data Analyst</span> at DataViz
+                          Interview scheduled for <span className="text-blue-600">Data Analyst</span> at DataViz
                           Analytics
                         </p>
                         <p className="text-sm text-gray-500">1 week ago</p>

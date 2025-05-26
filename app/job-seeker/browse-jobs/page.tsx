@@ -21,7 +21,7 @@ const MOCK_JOBS = [
       "We're looking for an experienced Frontend Developer to join our team. You'll be responsible for building responsive web applications using React, TypeScript, and modern CSS frameworks.",
     postedDate: "2 days ago",
     skills: ["React", "TypeScript", "Tailwind CSS", "Redux"],
-    logoUrl: "https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg",
+    logoUrl: "https://tailwindui.com/img/logos/workflow-mark-blue-600.svg",
     isNew: true,
   },
   {
@@ -198,7 +198,7 @@ export default function BrowseJobs() {
                   <select
                     id="sort-by"
                     name="sort-by"
-                    className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border"
+                    className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md border"
                     value={sortBy}
                     onChange={handleSortChange}
                   >

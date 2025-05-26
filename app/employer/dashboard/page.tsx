@@ -16,20 +16,20 @@ export default function EmployerDashboard() {
               </div>
               <div className="mt-4 flex md:mt-0 md:ml-4">
                 <Link href="/employer/company-profile">
-                  <button
+                  {/* <button
                     type="button"
                     className="inline-flex items-center px-4 py-2 border border-yellow-400 rounded-md shadow-sm text-sm font-medium text-yellow-400 bg-white hover:bg-yellow-50"
                   >
                     Edit Profile
-                  </button>
+                  </button> */}
                 </Link>
                 <Link href="/employer/job-postings/new">
-                  <button
+                  {/* <button
                     type="button"
                     className="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-800 hover:bg-blue-700"
                   >
                     <i className="fas fa-plus mr-2"></i> Post New Job
-                  </button>
+                  </button> */}
                 </Link>
               </div>
             </div>
@@ -69,7 +69,6 @@ export default function EmployerDashboard() {
                           <dt className="text-sm font-medium text-gray-500 truncate">Total Applications</dt>
                           <dd className="flex items-baseline">
                             <div className="text-2xl font-semibold text-gray-900">147</div>
-                            <span className="ml-2 text-sm font-medium text-green-600">+12 more</span>
                           </dd>
                         </dl>
                       </div>
@@ -88,7 +87,6 @@ export default function EmployerDashboard() {
                           <dt className="text-sm font-medium text-gray-500 truncate">Job Views</dt>
                           <dd className="flex items-baseline">
                             <div className="text-2xl font-semibold text-gray-900">1,284</div>
-                            <span className="ml-2 text-sm font-medium text-green-600">+8.2%</span>
                           </dd>
                         </dl>
                       </div>

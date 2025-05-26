@@ -121,7 +121,7 @@ export default function Applications() {
               <div className="bg-white overflow-hidden shadow rounded-lg">
                 <div className="px-4 py-5 sm:p-6">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+                    <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
                       <i className="fas fa-file-alt text-white"></i>
                     </div>
                     <div className="ml-5 w-0 flex-1">
@@ -202,7 +202,7 @@ export default function Applications() {
                     <select
                       id="status-filter"
                       name="status-filter"
-                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border"
+                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md border"
                       value={statusFilter}
                       onChange={(e) => setStatusFilter(e.target.value)}
                     >
@@ -221,7 +221,7 @@ export default function Applications() {
                     <select
                       id="date-filter"
                       name="date-filter"
-                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border"
+                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md border"
                       value={dateFilter}
                       onChange={(e) => setDateFilter(e.target.value)}
                     >
@@ -242,7 +242,7 @@ export default function Applications() {
                       type="text"
                       name="search"
                       id="search"
-                      className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md p-2 border"
+                      className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md p-2 border"
                       placeholder="Search applications..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
@@ -271,21 +271,20 @@ export default function Applications() {
                               />
                             </div>
                             <div className="ml-4">
-                              <div className="text-sm font-medium text-indigo-600">{application.jobTitle}</div>
+                              <div className="text-sm font-medium text-blue-600">{application.jobTitle}</div>
                               <div className="text-sm text-gray-500">{application.company}</div>
                             </div>
                           </div>
                           <div className="flex flex-col items-end">
                             <span
-                              className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                application.status === "Interview Scheduled"
-                                  ? "bg-green-100 text-green-800"
-                                  : application.status === "Application Reviewed"
-                                    ? "bg-blue-100 text-blue-800"
-                                    : application.status === "Rejected"
-                                      ? "bg-red-100 text-red-800"
-                                      : "bg-yellow-100 text-yellow-800"
-                              }`}
+                              className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${application.status === "Interview Scheduled"
+                                ? "bg-green-100 text-green-800"
+                                : application.status === "Application Reviewed"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : application.status === "Rejected"
+                                    ? "bg-red-100 text-red-800"
+                                    : "bg-yellow-100 text-yellow-800"
+                                }`}
                             >
                               {application.status}
                             </span>
@@ -321,14 +320,14 @@ export default function Applications() {
                             <div className="flex space-x-2">
                               <button
                                 type="button"
-                                className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                 onClick={() => openDetailsModal(application)}
                               >
                                 View Details
                               </button>
                               <button
                                 type="button"
-                                className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                               >
                                 Withdraw
                               </button>
@@ -388,7 +387,7 @@ export default function Applications() {
                       </div>
                       <button
                         type="button"
-                        className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         onClick={closeDetailsModal}
                       >
                         <span className="sr-only">Close</span>
@@ -399,15 +398,14 @@ export default function Applications() {
                     <div className="mt-4 border-t border-gray-200 pt-4">
                       <div className="flex flex-wrap gap-2 mb-4">
                         <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            selectedApplication.status === "Interview Scheduled"
-                              ? "bg-green-100 text-green-800"
-                              : selectedApplication.status === "Application Reviewed"
-                                ? "bg-blue-100 text-blue-800"
-                                : selectedApplication.status === "Rejected"
-                                  ? "bg-red-100 text-red-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                          }`}
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${selectedApplication.status === "Interview Scheduled"
+                            ? "bg-green-100 text-green-800"
+                            : selectedApplication.status === "Application Reviewed"
+                              ? "bg-blue-100 text-blue-800"
+                              : selectedApplication.status === "Rejected"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
                         >
                           {selectedApplication.status}
                         </span>
@@ -554,7 +552,7 @@ export default function Applications() {
                               <i className="fas fa-file-pdf text-red-500 text-lg mr-3"></i>
                               <span className="text-sm text-gray-900">Resume_John_Smith.pdf</span>
                             </div>
-                            <button type="button" className="text-indigo-600 hover:text-indigo-500">
+                            <button type="button" className="text-blue-600 hover:text-blue-500">
                               <i className="fas fa-download"></i>
                             </button>
                           </div>
@@ -563,7 +561,7 @@ export default function Applications() {
                               <i className="fas fa-file-alt text-blue-500 text-lg mr-3"></i>
                               <span className="text-sm text-gray-900">Cover_Letter_John_Smith.pdf</span>
                             </div>
-                            <button type="button" className="text-indigo-600 hover:text-indigo-500">
+                            <button type="button" className="text-blue-600 hover:text-blue-500">
                               <i className="fas fa-download"></i>
                             </button>
                           </div>
@@ -597,7 +595,7 @@ export default function Applications() {
                 </button>
                 <button
                   type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                 >
                   <i className="fas fa-envelope mr-2"></i> Contact Employer
                 </button>

@@ -141,11 +141,11 @@ export default function JobSeekerSignup() {
         }
     }
 
-    // Reset form
-    const handleReset = () => {
-        setFormData(initialFormState)
-        setErrors({})
-    }
+    // // Reset form
+    // const handleReset = () => {
+    //     setFormData(initialFormState)
+    //     setErrors({})
+    // }
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -338,13 +338,16 @@ export default function JobSeekerSignup() {
                                 {isLoading ? 'Creating Account...' : 'Create Account'}
                             </button>
 
-                            <button
-                                type="button"
-                                onClick={handleReset}
-                                className="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                            >
-                                Reset
-                            </button>
+                            {/*Login button */}
+                            <Link href="/login">
+                                <button
+                                    type="button"
+                                    className="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black-500"
+                                >
+                                    Login
+                                </button>
+                            </Link>
+
                         </div>
                     </form>
                 </div>

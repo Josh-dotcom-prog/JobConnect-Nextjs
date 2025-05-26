@@ -111,6 +111,7 @@ export default function EmployerLogin() {
                 <Link
                     href="/"
                     className="text-5xl font-bold mb-8">
+                    <i className="fas fa-briefcase text-blue-700 mr-6"></i>
                     <span className="text-blue-700">JOB</span> <span className="text-yellow-400">CONNECT</span>
                 </Link>
 
@@ -155,6 +156,12 @@ export default function EmployerLogin() {
                                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 />
                                 {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
+
+                                <p className='mt-6'>Forgot Password?
+                                    <Link href="#">
+                                        <span className="text-yellow-400">  Reset</span>
+                                    </Link>
+                                </p>
                             </div>
                         </div>
 
