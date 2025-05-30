@@ -45,10 +45,9 @@ interface CompanyProfile {
     values: string
     socialMedia: {
         linkedin: string
-        twitter: string
+        X: string
         instagram: string
         facebook: string
-        github: string
         youtube: string
     }
 }
@@ -58,8 +57,8 @@ export default function CompanyProfilePage() {
     const [activeTab, setActiveTab] = useState('basic-info')
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [userMenuOpen, setUserMenuOpen] = useState(false)
-    const [teamModalOpen, setTeamModalOpen] = useState(false)
-    const [editingMember, setEditingMember] = useState<TeamMember | null>(null)
+    // const [teamModalOpen, setTeamModalOpen] = useState(false)
+    // const [editingMember, setEditingMember] = useState<TeamMember | null>(null)
 
     const [profile, setProfile] = useState<CompanyProfile>({
         name: '',
@@ -75,52 +74,51 @@ export default function CompanyProfilePage() {
         values: 'Innovation, Integrity, Collaboration, Excellence, Customer Focus',
         socialMedia: {
             linkedin: 'https://www.linkedin.com/company/techcorp',
-            twitter: 'https://twitter.com/techcorp',
+            X: 'https://x.com/techcorp',
             instagram: 'https://www.instagram.com/techcorp',
             facebook: 'https://www.facebook.com/techcorp',
-            github: 'https://github.com/techcorp',
             youtube: 'https://www.youtube.com/techcorp'
         }
     })
 
-    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
-        {
-            id: '1',
-            name: 'Sarah Johnson',
-            title: 'CEO & Founder',
-            photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        },
-        {
-            id: '2',
-            name: 'Michael Chen',
-            title: 'CTO',
-            photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        },
-        {
-            id: '3',
-            name: 'Robert Taylor',
-            title: 'VP of Engineering',
-            photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        },
-        {
-            id: '4',
-            name: 'Jessica Martinez',
-            title: 'Head of HR',
-            photo: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        }
-    ])
+    // const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
+    //     {
+    //         id: '1',
+    //         name: 'Sarah Johnson',
+    //         title: 'CEO & Founder',
+    //         photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+    //     },
+    //     {
+    //         id: '2',
+    //         name: 'Michael Chen',
+    //         title: 'CTO',
+    //         photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+    //     },
+    //     {
+    //         id: '3',
+    //         name: 'Robert Taylor',
+    //         title: 'VP of Engineering',
+    //         photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+    //     },
+    //     {
+    //         id: '4',
+    //         name: 'Jessica Martinez',
+    //         title: 'Head of HR',
+    //         photo: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+    //     }
+    // ])
 
-    const [newMember, setNewMember] = useState<Partial<TeamMember>>({
-        name: '',
-        title: '',
-        bio: '',
-        linkedin: ''
-    })
+    // const [newMember, setNewMember] = useState<Partial<TeamMember>>({
+    //     name: '',
+    //     title: '',
+    //     bio: '',
+    //     linkedin: ''
+    // })
 
     const tabs = [
         { id: 'basic-info', label: 'Basic Information' },
         { id: 'branding', label: 'Branding' },
-        { id: 'team', label: 'Team Members' },
+        // { id: 'team', label: 'Team Members' },
         { id: 'social', label: 'Social Media' }
     ]
 
@@ -132,59 +130,59 @@ export default function CompanyProfilePage() {
         })
     }
 
-    const handleAddTeamMember = () => {
-        if (!newMember.name || !newMember.title) {
-            toast({
-                title: 'Error',
-                description: 'Please fill in all required fields.',
-                variant: 'destructive'
-            })
-            return
-        }
+    // const handleAddTeamMember = () => {
+    //     if (!newMember.name || !newMember.title) {
+    //         toast({
+    //             title: 'Error',
+    //             description: 'Please fill in all required fields.',
+    //             variant: 'destructive'
+    //         })
+    //         return
+    //     }
 
-        const member: TeamMember = {
-            id: Date.now().toString(),
-            name: newMember.name!,
-            title: newMember.title!,
-            bio: newMember.bio,
-            linkedin: newMember.linkedin
-        }
+    //     const member: TeamMember = {
+    //         id: Date.now().toString(),
+    //         name: newMember.name!,
+    //         title: newMember.title!,
+    //         bio: newMember.bio,
+    //         linkedin: newMember.linkedin
+    //     }
 
-        if (editingMember) {
-            setTeamMembers(prev => prev.map(m => m.id === editingMember.id ? { ...member, id: editingMember.id } : m))
-            toast({
-                title: 'Team Member Updated!',
-                description: `${member.name} has been updated.`,
-            })
-        } else {
-            setTeamMembers(prev => [member, ...prev])
-            toast({
-                title: 'Team Member Added!',
-                description: `${member.name} has been added to your team.`,
-            })
-        }
+    //     if (editingMember) {
+    //         setTeamMembers(prev => prev.map(m => m.id === editingMember.id ? { ...member, id: editingMember.id } : m))
+    //         toast({
+    //             title: 'Team Member Updated!',
+    //             description: `${member.name} has been updated.`,
+    //         })
+    //     } else {
+    //         setTeamMembers(prev => [member, ...prev])
+    //         toast({
+    //             title: 'Team Member Added!',
+    //             description: `${member.name} has been added to your team.`,
+    //         })
+    //     }
 
-        setNewMember({ name: '', title: '', bio: '', linkedin: '' })
-        setEditingMember(null)
-        setTeamModalOpen(false)
-    }
+    //     setNewMember({ name: '', title: '', bio: '', linkedin: '' })
+    //     setEditingMember(null)
+    //     setTeamModalOpen(false)
+    // }
 
-    const handleEditMember = (member: TeamMember) => {
-        setEditingMember(member)
-        setNewMember(member)
-        setTeamModalOpen(true)
-    }
+    // const handleEditMember = (member: TeamMember) => {
+    //     setEditingMember(member)
+    //     setNewMember(member)
+    //     setTeamModalOpen(true)
+    // }
 
-    const handleDeleteMember = (memberId: string) => {
-        const member = teamMembers.find(m => m.id === memberId)
-        if (member && confirm(`Are you sure you want to remove ${member.name} from your team?`)) {
-            setTeamMembers(prev => prev.filter(m => m.id !== memberId))
-            toast({
-                title: 'Team Member Removed',
-                description: `${member.name} has been removed from your team.`,
-            })
-        }
-    }
+    // const handleDeleteMember = (memberId: string) => {
+    //     const member = teamMembers.find(m => m.id === memberId)
+    //     if (member && confirm(`Are you sure you want to remove ${member.name} from your team?`)) {
+    //         setTeamMembers(prev => prev.filter(m => m.id !== memberId))
+    //         toast({
+    //             title: 'Team Member Removed',
+    //             description: `${member.name} has been removed from your team.`,
+    //         })
+    //     }
+    // }
 
     return (
         <div className="bg-gray-50 min-h-screen">
@@ -504,7 +502,7 @@ export default function CompanyProfilePage() {
                             </Card>
                         )}
 
-                        {/* Team Members Tab */}
+                        {/* Team Members Tab
                         {activeTab === 'team' && (
                             <Card className="mb-6">
                                 <CardContent className="p-6">
@@ -557,7 +555,7 @@ export default function CompanyProfilePage() {
                                     </div>
                                 </CardContent>
                             </Card>
-                        )}
+                        )} */}
 
                         {/* Social Media Tab */}
                         {activeTab === 'social' && (
@@ -601,7 +599,7 @@ export default function CompanyProfilePage() {
             </div>
 
             {/* Team Member Modal */}
-            {teamModalOpen && (
+            {/* {teamModalOpen && (
                 <div className="fixed z-10 inset-0 overflow-y-auto">
                     <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                         <div className="fixed inset-0 transition-opacity" onClick={() => setTeamModalOpen(false)}>
@@ -675,7 +673,7 @@ export default function CompanyProfilePage() {
                                 >
                                     {editingMember ? 'Update' : 'Add'} Member
                                 </Button> */}
-                                <Button
+            {/* <Button
                                     variant="outline"
                                     onClick={() => {
                                         setTeamModalOpen(false)
@@ -687,10 +685,10 @@ export default function CompanyProfilePage() {
                                     Cancel
                                 </Button>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+                        </div> */}
+            {/* </div>
+                </div> */}
+            {/* )}  */}
         </div>
     )
 }

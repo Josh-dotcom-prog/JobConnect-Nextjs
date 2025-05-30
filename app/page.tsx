@@ -7,7 +7,7 @@ export default function Home() {
       className="hero-section min-h-screen flex flex-col items-center justify-center text-white p-4"
       style={{
         backgroundImage:
-          `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('${bgimage.src}')`,
+          `linear-gradient(rgba(0, 0, 0, 0.69), rgba(0, 0, 0, 0.7)), url('${bgimage.src}')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

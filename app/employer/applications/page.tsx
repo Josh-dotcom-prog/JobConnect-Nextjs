@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
+import Navbar from "@/components/navigation/navbar"
 import { useToast } from '@/hooks/use-toast'
 
 interface Application {
@@ -130,6 +131,8 @@ export default function ApplicationsPage() {
     const [newStatus, setNewStatus] = useState<Application['status']>('new')
     const [statusNotes, setStatusNotes] = useState('')
     const [applicantNotes, setApplicantNotes] = useState('')
+    const [showDetailsModal, setShowDetailsModal] = useState(false)
+
 
     const { toast } = useToast()
 
@@ -343,43 +346,8 @@ export default function ApplicationsPage() {
     return (
         <div className="bg-gray-50 min-h-screen">
             {/* Navigation */}
-            <nav className="bg-white border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
-                        <div className="flex">
-                            <div className="flex-shrink-0 flex items-center">
-                                <span className="text-3xl font-bold text-blue-800">
-                                    <span className="text-yellow-400">JOB</span>Connect
-                                </span>
-                            </div>
-                            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                                <a href="/employer/dashboard" className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">
-                                    Dashboard
-                                </a>
-                                <a href="/employer/jobs" className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">
-                                    Jobs
-                                </a>
-                                <a href="/employer/applications" className="text-blue-600 border-b-2 border-blue-600 px-3 py-2 text-sm font-medium">
-                                    Applications
-                                </a>
-                                <a href="/employer/profile" className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">
-                                    Profile
-                                </a>
-                            </div>
-                        </div>
-                        <div className="flex items-center">
-                            <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
-                                Post Job
-                            </button>
-                            <button className="ml-3 text-gray-500 hover:text-gray-700">
-                                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+            <Navbar userType="employer" activePage="jobPostings" />
+
 
             {/* Main Content */}
             <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">

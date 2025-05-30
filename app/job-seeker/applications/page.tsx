@@ -121,8 +121,8 @@ export default function Applications() {
               <div className="bg-white overflow-hidden shadow rounded-lg">
                 <div className="px-4 py-5 sm:p-6">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
-                      <i className="fas fa-file-alt text-white"></i>
+                    <div className="flex-shrink-0 p-3">
+                      <i className="fas fa-file-alt text-blue-700"></i>
                     </div>
                     <div className="ml-5 w-0 flex-1">
                       <dl>
@@ -139,8 +139,8 @@ export default function Applications() {
               <div className="bg-white overflow-hidden shadow rounded-lg">
                 <div className="px-4 py-5 sm:p-6">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-yellow-500 rounded-md p-3">
-                      <i className="fas fa-hourglass-half text-white"></i>
+                    <div className="flex-shrink-0 p-3">
+                      <i className="fas fa-hourglass-half text-yellow-400"></i>
                     </div>
                     <div className="ml-5 w-0 flex-1">
                       <dl>
@@ -157,8 +157,8 @@ export default function Applications() {
               <div className="bg-white overflow-hidden shadow rounded-lg">
                 <div className="px-4 py-5 sm:p-6">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-green-500 rounded-md p-3">
-                      <i className="fas fa-check-circle text-white"></i>
+                    <div className="flex-shrink-0 p-3">
+                      <i className="fas fa-check-circle text-green-400"></i>
                     </div>
                     <div className="ml-5 w-0 flex-1">
                       <dl>
@@ -175,8 +175,8 @@ export default function Applications() {
               <div className="bg-white overflow-hidden shadow rounded-lg">
                 <div className="px-4 py-5 sm:p-6">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-red-500 rounded-md p-3">
-                      <i className="fas fa-times-circle text-white"></i>
+                    <div className="flex-shrink-0 p-3">
+                      <i className="fas fa-times-circle text-red-500"></i>
                     </div>
                     <div className="ml-5 w-0 flex-1">
                       <dl>
@@ -325,12 +325,7 @@ export default function Applications() {
                               >
                                 View Details
                               </button>
-                              <button
-                                type="button"
-                                className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                              >
-                                Withdraw
-                              </button>
+
                             </div>
                           </div>
                         </div>
@@ -544,7 +539,7 @@ export default function Applications() {
                       </div>
 
                       {/* Application Materials */}
-                      <div className="mt-6">
+                      <div className="mt-12">
                         <h4 className="text-lg font-medium text-gray-900 mb-2">Your Application Materials</h4>
                         <div className="space-y-3">
                           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
@@ -586,7 +581,7 @@ export default function Applications() {
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              {/* <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
@@ -599,7 +594,7 @@ export default function Applications() {
                 >
                   <i className="fas fa-envelope mr-2"></i> Contact Employer
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
