@@ -28,12 +28,12 @@ export default function Login() {
     // Handle input changes
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target
-        const actualValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked ? 'true' : 'false' : value
+        // const actualValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked ? 'true' : 'false' : value
 
-        setFormData(prev => ({
-            ...prev,
-            [name]: actualValue
-        }))
+        // setFormData(prev => ({
+        //     ...prev,
+        //     [name]: actualValue
+        // }))
 
         // Clear error when user starts typing
         if (errors[name as keyof FormData]) {
