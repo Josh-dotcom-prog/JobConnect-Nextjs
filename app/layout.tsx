@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "JobConnect - Bridge From Campus to Career",
-  description: "Find your dream job or the perfect candidate with CareerConnect",
+  description: "Find your dream job or the perfect candidate with JobConnect",
 }
 
 export default function RootLayout({

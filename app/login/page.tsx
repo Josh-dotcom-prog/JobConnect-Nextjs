@@ -19,7 +19,7 @@ const initialFormState: FormData = {
 
 }
 
-export default function EmployerLogin() {
+export default function Login() {
     const [formData, setFormData] = useState<FormData>(initialFormState)
     const [errors, setErrors] = useState<Partial<FormData>>({})
     const [isLoading, setIsLoading] = useState(false)

@@ -45,7 +45,7 @@ export default function JobCard({
               />
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-medium text-indigo-600 truncate">{title}</h3>
+              <h3 className="text-lg font-medium text-blue-600 truncate">{title}</h3>
               <div className="flex items-center">
                 <p className="text-sm font-medium text-gray-900">{company}</p>
                 <span className="mx-2 text-gray-500">•</span>
@@ -54,7 +54,7 @@ export default function JobCard({
             </div>
           </div>
           <div className="flex flex-col items-end">
-            {isNew && (
+            {/* {isNew && (
               <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                 New
               </span>
@@ -63,7 +63,7 @@ export default function JobCard({
               <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                 Featured
               </span>
-            )}
+            )} */}
             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 mt-1">
               {jobType}
             </span>
@@ -94,7 +94,7 @@ export default function JobCard({
               </Link>
               <Link
                 href={`/job-seeker/jobs/${id}/apply`}
-                className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded text-white bg-indigo-600 hover:bg-indigo-700"
+                className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700"
               >
                 Apply Now
               </Link>
