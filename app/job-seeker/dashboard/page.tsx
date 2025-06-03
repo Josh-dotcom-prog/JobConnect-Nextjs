@@ -152,7 +152,7 @@ export default function JobSeekerDashboard() {
         </div>
 
         {/* Recent Activity */}
-        <div className="mt-8 px-4 sm:px-0">
+        {/* <div className="mt-8 px-4 sm:px-0">
           <h2 className="text-lg font-medium text-gray-900 mb-4">Recent Activity</h2>
           <div className="bg-white shadow overflow-hidden sm:rounded-md">
             <ul className="divide-y divide-gray-200">
@@ -211,7 +211,7 @@ export default function JobSeekerDashboard() {
               </li>
             </ul>
           </div>
-        </div>
+        </div> */}
       </main>
     </div>
   )

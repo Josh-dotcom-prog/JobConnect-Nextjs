@@ -26,13 +26,13 @@ export default function Home() {
 
           <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-8 mb-16">
             <Link
-              href="/signup"
+              href="/auth"
               className="bg-blue-700 text-white font-bold py-4 px-12 rounded-full text-xl transition duration-300 hover:opacity-90"
             >
               JOB SEEKER
             </Link>
             <Link
-              href="/signup"
+              href="/auth"
               className="bg-yellow-400 text-white font-bold py-4 px-12 rounded-full text-xl transition duration-300 hover:opacity-90"
             >
               EMPLOYER

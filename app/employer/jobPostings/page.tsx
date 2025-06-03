@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import Navbar from "@/components/navigation/navbar"
 import Link from "next/link"
+import { useRouter } from 'next/navigation'
 
 
 
@@ -53,6 +54,7 @@ const JobPostingsPage = () => {
     const [statusFilter, setStatusFilter] = useState('all')
     const [sortBy, setSortBy] = useState('newest')
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const router = useRouter()
     const [jobPostings, setJobPostings] = useState<JobPosting[]>([
         {
             id: '1',
@@ -62,8 +64,8 @@ const JobPostingsPage = () => {
             location: 'Remote',
             salaryMin: '$100k',
             salaryMax: '$130k',
-            description: '',
-            requirements: '',
+            description: 'We are seeking a talented Senior Frontend Developer to join our growing engineering team. You will be responsible for developing and maintaining high-quality web applications using modern technologies.',
+            requirements: '5+ years of experience with React, TypeScript, and modern frontend technologies. Strong understanding of web performance optimization and responsive design.',
             status: 'active',
             postedDate: '2023-01-15',
             applicants: 42,
@@ -78,8 +80,8 @@ const JobPostingsPage = () => {
             location: 'On-site',
             salaryMin: '$80k',
             salaryMax: '$100k',
-            description: '',
-            requirements: '',
+            description: 'Join our design team to create beautiful and intuitive user experiences. You will work closely with product managers and developers to bring designs to life.',
+            requirements: '3+ years of experience in UI/UX design, proficiency in Figma, Adobe Creative Suite, and strong portfolio demonstrating design thinking.',
             status: 'active',
             postedDate: '2023-01-10',
             applicants: 28,
@@ -94,8 +96,8 @@ const JobPostingsPage = () => {
             location: 'Hybrid',
             salaryMin: '$120k',
             salaryMax: '$150k',
-            description: '',
-            requirements: '',
+            description: 'We are looking for a Data Scientist to analyze large datasets and build predictive models that drive business decisions.',
+            requirements: 'PhD or Masters in Data Science, Statistics, or related field. Experience with Python, R, SQL, and machine learning frameworks.',
             status: 'draft',
             postedDate: '2023-01-05',
             applicants: 0,
@@ -110,8 +112,8 @@ const JobPostingsPage = () => {
             location: 'Remote',
             salaryMin: '$110k',
             salaryMax: '$140k',
-            description: '',
-            requirements: '',
+            description: 'Join our DevOps team to build and maintain scalable infrastructure. You will work with cloud technologies and automation tools.',
+            requirements: '4+ years of experience with AWS/GCP, Docker, Kubernetes, and CI/CD pipelines. Strong scripting skills in Python or Bash.',
             status: 'closed',
             postedDate: '2022-12-01',
             applicants: 35,
@@ -174,16 +176,12 @@ const JobPostingsPage = () => {
 
         switch (action) {
             case 'view':
-                toast({
-                    title: "Viewing Job",
-                    description: `Opening details for ${job.title}`,
-                })
+                // Navigate to the job view page
+                router.push(`/employer/jobs/${jobId}`)
                 break
             case 'edit':
-                toast({
-                    title: "Edit Job",
-                    description: `Editing ${job.title}`,
-                })
+                // Navigate to the job edit page
+                router.push(`/employer/jobs/${jobId}/edit`)
                 break
             case 'close':
                 if (confirm(`Are you sure you want to close the job posting for: ${job.title}?`)) {
@@ -359,7 +357,7 @@ const JobPostingsPage = () => {
             <Navbar userType="employer" activePage="jobPostings" />
 
             {/* Header */}
-            <div className="bg-white border-b border-gray-200">
+            <div className="bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="md:flex md:items-center md:justify-between">
                         <div className="flex-1 min-w-0">
@@ -373,7 +371,7 @@ const JobPostingsPage = () => {
                         <div className="mt-4 flex md:mt-0 md:ml-4">
                             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                                 <DialogTrigger asChild>
-                                    <Button>
+                                    <Button className='bg-blue-600 text-white hover:bg-blue-700'>
                                         <Plus className="h-4 w-4 mr-2" />
                                         Post New Job
                                     </Button>
@@ -478,13 +476,13 @@ const JobPostingsPage = () => {
                                         >
                                             Cancel
                                         </Button>
-                                        <Button
+                                        {/* <Button
                                             variant="outline"
                                             onClick={() => handleSaveJob(true)}
                                         >
                                             Save as Draft
-                                        </Button>
-                                        <Button onClick={() => handleSaveJob(false)}>
+                                        </Button> */}
+                                        <Button className='bg-yellow-400 text-white' onClick={() => handleSaveJob(false)}>
                                             Publish Job
                                         </Button>
                                     </div>
