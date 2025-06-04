@@ -29,14 +29,10 @@ interface ApplicationFormData {
     email: string
     phone: string
     location: string
-    linkedinUrl: string
-    portfolioUrl: string
     coverLetter: string
     experience: string
     availability: string
     salaryExpectation: string
-    workAuthorization: string
-    willingToRelocate: boolean
     agreedToTerms: boolean
 }
 
@@ -47,14 +43,10 @@ export default function JobApplicationPage() {
         email: "",
         phone: "",
         location: "",
-        linkedinUrl: "",
-        portfolioUrl: "",
         coverLetter: "",
         experience: "",
         availability: "",
         salaryExpectation: "",
-        workAuthorization: "",
-        willingToRelocate: false,
         agreedToTerms: false,
     })
 
@@ -135,258 +127,145 @@ export default function JobApplicationPage() {
                     Back to job details
                 </Link>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Application form */}
-                    <div className="lg:col-span-2">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-2xl">Apply for this position</CardTitle>
-                                <p className="text-gray-600">
-                                    Fill out the form below to submit your application. All fields marked with * are required.
-                                </p>
-                            </CardHeader>
-                            <CardContent>
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    {/* Personal Information */}
-                                    <div>
-                                        <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div>
-                                                <Label htmlFor="firstName">First Name *</Label>
-                                                <Input
-                                                    id="firstName"
-                                                    value={formData.firstName}
-                                                    onChange={(e) => handleInputChange("firstName", e.target.value)}
-                                                    required
-                                                />
-                                            </div>
-                                            <div>
-                                                <Label htmlFor="lastName">Last Name *</Label>
-                                                <Input
-                                                    id="lastName"
-                                                    value={formData.lastName}
-                                                    onChange={(e) => handleInputChange("lastName", e.target.value)}
-                                                    required
-                                                />
-                                            </div>
-                                            <div>
-                                                <Label htmlFor="email">Email Address *</Label>
-                                                <Input
-                                                    id="email"
-                                                    type="email"
-                                                    value={formData.email}
-                                                    onChange={(e) => handleInputChange("email", e.target.value)}
-                                                    required
-                                                />
-                                            </div>
-                                            <div>
-                                                <Label htmlFor="phone">Phone Number *</Label>
-                                                <Input
-                                                    id="phone"
-                                                    type="tel"
-                                                    value={formData.phone}
-                                                    onChange={(e) => handleInputChange("phone", e.target.value)}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="md:col-span-2">
-                                                <Label htmlFor="location">Current Location *</Label>
-                                                <Input
-                                                    id="location"
-                                                    value={formData.location}
-                                                    onChange={(e) => handleInputChange("location", e.target.value)}
-                                                    placeholder="City, State/Country"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Professional Information */}
-                                    <div>
-                                        <h3 className="text-lg font-semibold mb-4">Professional Information</h3>
-                                        <div className="space-y-4">
-                                            <div>
-                                                <Label htmlFor="linkedinUrl">LinkedIn Profile</Label>
-                                                <Input
-                                                    id="linkedinUrl"
-                                                    value={formData.linkedinUrl}
-                                                    onChange={(e) => handleInputChange("linkedinUrl", e.target.value)}
-                                                    placeholder="https://linkedin.com/in/yourprofile"
-                                                />
-                                            </div>
-                                            <div>
-                                                <Label htmlFor="portfolioUrl">Portfolio/Website</Label>
-                                                <Input
-                                                    id="portfolioUrl"
-                                                    value={formData.portfolioUrl}
-                                                    onChange={(e) => handleInputChange("portfolioUrl", e.target.value)}
-                                                    placeholder="https://yourportfolio.com"
-                                                />
-                                            </div>
-                                            <div>
-                                                <Label htmlFor="experience">Years of Experience *</Label>
-                                                <Select onValueChange={(value) => handleInputChange("experience", value)}>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select experience level" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="0-1">0-1 years</SelectItem>
-                                                        <SelectItem value="2-3">2-3 years</SelectItem>
-                                                        <SelectItem value="4-5">4-5 years</SelectItem>
-                                                        <SelectItem value="6-8">6-8 years</SelectItem>
-                                                        <SelectItem value="9+">9+ years</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Resume Upload */}
-                                    <div>
-                                        <h3 className="text-lg font-semibold mb-4">Resume & Documents</h3>
-                                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                                            <div className="text-center">
-                                                <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                                                <div className="mt-4">
-                                                    <label htmlFor="file-upload" className="cursor-pointer">
-                                                        <span className="mt-2 block text-sm font-medium text-gray-900">
-                                                            Upload your resume and cover letter
-                                                        </span>
-                                                        <span className="mt-1 block text-sm text-gray-500">PDF, DOC, or DOCX up to 10MB</span>
-                                                    </label>
-                                                    <input
-                                                        id="file-upload"
-                                                        name="file-upload"
-                                                        type="file"
-                                                        className="sr-only"
-                                                        multiple
-                                                        accept=".pdf,.doc,.docx"
-                                                        onChange={handleFileUpload}
-                                                    />
-                                                </div>
-                                                <Button type="button" variant="outline" className="mt-4">
-                                                    Choose Files
-                                                </Button>
-                                            </div>
-                                        </div>
-
-                                        {uploadedFiles.length > 0 && (
-                                            <div className="mt-4 space-y-2">
-                                                {uploadedFiles.map((file, index) => (
-                                                    <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
-                                                        <span className="text-sm text-gray-700">{file.name}</span>
-                                                        <Button type="button" variant="ghost" size="sm" onClick={() => removeFile(index)}>
-                                                            <X className="w-4 h-4" />
-                                                        </Button>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Cover Letter */}
-                                    <div>
-                                        <Label htmlFor="coverLetter">Cover Letter</Label>
-                                        <Textarea
-                                            id="coverLetter"
-                                            value={formData.coverLetter}
-                                            onChange={(e) => handleInputChange("coverLetter", e.target.value)}
-                                            placeholder="Tell us why you're interested in this position and what makes you a great fit..."
-                                            rows={6}
-                                        />
-                                    </div>
-
-                                    {/* Additional Information */}
-                                    <div>
-                                        <h3 className="text-lg font-semibold mb-4">Additional Information</h3>
-                                        <div className="space-y-4">
-                                            <div>
-                                                <Label htmlFor="availability">Availability *</Label>
-                                                <Select onValueChange={(value) => handleInputChange("availability", value)}>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="When can you start?" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="immediately">Immediately</SelectItem>
-                                                        <SelectItem value="2-weeks">2 weeks notice</SelectItem>
-                                                        <SelectItem value="1-month">1 month</SelectItem>
-                                                        <SelectItem value="2-months">2 months</SelectItem>
-                                                        <SelectItem value="3-months">3+ months</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                            <div>
-                                                <Label htmlFor="salaryExpectation">Salary Expectation</Label>
-                                                <Input
-                                                    id="salaryExpectation"
-                                                    value={formData.salaryExpectation}
-                                                    onChange={(e) => handleInputChange("salaryExpectation", e.target.value)}
-                                                    placeholder="e.g., $120,000 - $150,000"
-                                                />
-                                            </div>
-                                            <div>
-                                                <Label htmlFor="workAuthorization">Work Authorization *</Label>
-                                                <Select onValueChange={(value) => handleInputChange("workAuthorization", value)}>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select your work authorization status" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="citizen">US Citizen</SelectItem>
-                                                        <SelectItem value="permanent-resident">Permanent Resident</SelectItem>
-                                                        <SelectItem value="h1b">H1B Visa</SelectItem>
-                                                        <SelectItem value="opt">F1 OPT</SelectItem>
-                                                        <SelectItem value="other">Other</SelectItem>
-                                                        <SelectItem value="require-sponsorship">Require Sponsorship</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Checkboxes */}
-                                    <div className="space-y-4">
-                                        <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id="willingToRelocate"
-                                                checked={formData.willingToRelocate}
-                                                onCheckedChange={(checked) => handleInputChange("willingToRelocate", checked as boolean)}
-                                            />
-                                            <Label htmlFor="willingToRelocate" className="text-sm">
-                                                I am willing to relocate for this position
-                                            </Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id="agreedToTerms"
-                                                checked={formData.agreedToTerms}
-                                                onCheckedChange={(checked) => handleInputChange("agreedToTerms", checked as boolean)}
+                {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-8"> */}
+                {/* Application form */}
+                <div className="lg:col-span-2">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-2xl">Apply for this position</CardTitle>
+                            <p className="text-gray-600">
+                                Fill out the form below to submit your application. All fields marked with * are required.
+                            </p>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                {/* Personal Information */}
+                                <div>
+                                    <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <Label htmlFor="firstName">First Name *</Label>
+                                            <Input
+                                                id="firstName"
+                                                value={formData.firstName}
+                                                onChange={(e) => handleInputChange("firstName", e.target.value)}
                                                 required
                                             />
-                                            <Label htmlFor="agreedToTerms" className="text-sm">
-                                                I agree to the terms and conditions and privacy policy *
-                                            </Label>
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="lastName">Last Name *</Label>
+                                            <Input
+                                                id="lastName"
+                                                value={formData.lastName}
+                                                onChange={(e) => handleInputChange("lastName", e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="email">Email Address *</Label>
+                                            <Input
+                                                id="email"
+                                                type="email"
+                                                value={formData.email}
+                                                onChange={(e) => handleInputChange("email", e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="phone">Phone Number *</Label>
+                                            <Input
+                                                id="phone"
+                                                type="tel"
+                                                value={formData.phone}
+                                                onChange={(e) => handleInputChange("phone", e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="md:col-span-2">
+                                            <Label htmlFor="location">Current Location *</Label>
+                                            <Input
+                                                id="location"
+                                                value={formData.location}
+                                                onChange={(e) => handleInputChange("location", e.target.value)}
+                                                placeholder="City, State/Country"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Resume Upload */}
+                                <div>
+                                    <h3 className="text-lg font-semibold mb-4">Resume & Documents</h3>
+                                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                                        <div className="text-center">
+                                            <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                                            <div className="mt-4">
+                                                <label htmlFor="file-upload" className="cursor-pointer">
+                                                    <span className="mt-2 block text-sm font-medium text-gray-900">
+                                                        Upload your resume and cover letter
+                                                    </span>
+                                                    <span className="mt-1 block text-sm text-gray-500">PDF, DOC, or DOCX up to 10MB</span>
+                                                </label>
+                                                <input
+                                                    id="file-upload"
+                                                    name="file-upload"
+                                                    type="file"
+                                                    className="sr-only"
+                                                    multiple
+                                                    accept=".pdf,.doc,.docx"
+                                                    onChange={handleFileUpload}
+                                                />
+                                            </div>
+                                            <Button type="button" variant="outline" className="mt-4">
+                                                Choose Files
+                                            </Button>
                                         </div>
                                     </div>
 
-                                    {/* Submit button */}
-                                    <div className="pt-6">
-                                        <Button
-                                            type="submit"
-                                            className="w-full"
-                                            size="lg"
-                                            disabled={isSubmitting || !formData.agreedToTerms}
-                                        >
-                                            {isSubmitting ? "Submitting Application..." : "Submit Application"}
-                                        </Button>
-                                    </div>
-                                </form>
-                            </CardContent>
-                        </Card>
-                    </div>
+                                    {uploadedFiles.length > 0 && (
+                                        <div className="mt-4 space-y-2">
+                                            {uploadedFiles.map((file, index) => (
+                                                <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                                                    <span className="text-sm text-gray-700">{file.name}</span>
+                                                    <Button type="button" variant="ghost" size="sm" onClick={() => removeFile(index)}>
+                                                        <X className="w-4 h-4" />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
 
-                    {/* Job summary sidebar */}
-                    <div>
+                                {/* Cover Letter */}
+                                <div>
+                                    <Label htmlFor="coverLetter">Cover Letter</Label>
+                                    <Textarea
+                                        id="coverLetter"
+                                        value={formData.coverLetter}
+                                        onChange={(e) => handleInputChange("coverLetter", e.target.value)}
+                                        placeholder="Tell us why you're interested in this position and what makes you a great fit..."
+                                        rows={6}
+                                    />
+                                </div>
+
+                                {/* Submit button */}
+                                <div className="pt-6">
+                                    <Button
+                                        type="submit"
+                                        className="w-full bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                                        size="lg"
+                                    >
+                                        {isSubmitting ? "Submitting Application..." : "Submit Application"}
+                                    </Button>
+                                </div>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Job summary sidebar */}
+                {/* <div>
                         <Card className="sticky top-8">
                             <CardHeader>
                                 <CardTitle>Job Summary</CardTitle>
@@ -416,9 +295,9 @@ export default function JobApplicationPage() {
                                 </div>
                             </CardContent>
                         </Card>
-                    </div>
-                </div>
+                    </div> */}
             </div>
         </div>
+        // </div >
     )
 }

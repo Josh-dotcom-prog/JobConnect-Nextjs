@@ -240,13 +240,10 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
                         <Card>
                             <CardContent className="pt-6">
                                 <Link href={`/job-seeker/jobs/${id}/apply`}>
-                                    <Button className="w-full" size="lg">
+                                    <Button className="w-full mt-3 bg-yellow-500 text-white hover:bg-yellow-200 hover:text-black" size="lg">
                                         Apply Now
                                     </Button>
                                 </Link>
-                                <Button variant="outline" className="w-full mt-3" size="lg">
-                                    Save Job
-                                </Button>
                             </CardContent>
                         </Card>
 
@@ -283,22 +280,6 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
                             </CardContent>
                         </Card>
 
-                        {/* Benefits */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Benefits</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <ul className="space-y-2">
-                                    {job.benefits.map((benefit, index) => (
-                                        <li key={index} className="flex items-center">
-                                            <Star className="w-4 h-4 text-yellow-500 mr-2" />
-                                            <span className="text-sm text-gray-700">{benefit}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </CardContent>
-                        </Card>
 
                         {/* Company info */}
                         <Card>

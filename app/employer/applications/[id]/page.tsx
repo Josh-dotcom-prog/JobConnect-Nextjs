@@ -406,26 +406,6 @@ export default function ApplicationDetailPage() {
                                         </div>
                                     </CardContent>
                                 </Card>
-
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Quick Actions</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="space-y-3">
-                                        <Button className="w-full">
-                                            <Mail className="w-4 h-4 mr-2" />
-                                            Send Email
-                                        </Button>
-                                        <Button variant="outline" className="w-full">
-                                            <Calendar className="w-4 h-4 mr-2" />
-                                            Schedule Interview
-                                        </Button>
-                                        <Button variant="outline" className="w-full">
-                                            <Phone className="w-4 h-4 mr-2" />
-                                            Call Candidate
-                                        </Button>
-                                    </CardContent>
-                                </Card>
                             </div>
                         </div>
                     </TabsContent>
