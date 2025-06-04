@@ -1,16 +1,24 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { cn } from '@/lib/utils'
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { Search, Download, Eye, Calendar, MapPin, Mail, Phone } from "lucide-react"
 import Navbar from "@/components/navigation/navbar"
-import { useToast } from '@/hooks/use-toast'
+import { useToast } from "@/hooks/use-toast"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface Application {
     id: string
     name: string
     position: string
-    status: 'new' | 'review' | 'interview' | 'offer' | 'hired' | 'rejected'
-    jobType: 'frontend' | 'ui-ux' | 'data' | 'devops'
+    jobId: string
+    status: "new" | "review" | "interview" | "offer" | "hired" | "rejected"
+    jobType: "frontend" | "ui-ux" | "data" | "devops"
     image: string
     education: string
     experience: string
@@ -19,120 +27,144 @@ interface Application {
     phone: string
     skills: string[]
     notes?: string
+    location: string
+    resumeUrl?: string
+    coverLetter?: string
 }
 
 const mockApplications: Application[] = [
     {
-        id: '1',
-        name: 'Michael Johnson',
-        position: 'Senior Frontend Developer',
-        status: 'new',
-        jobType: 'frontend',
-        image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        education: 'Stanford University',
-        experience: '5 years experience',
-        appliedDate: 'Jan 20, 2023',
-        email: 'michael.johnson@example.com',
-        phone: '(555) 123-4567',
-        skills: ['JavaScript', 'React', 'TypeScript', 'HTML/CSS', 'Redux', 'Node.js']
+        id: "1",
+        name: "Michael Johnson",
+        position: "Senior Frontend Developer",
+        jobId: "1",
+        status: "new",
+        jobType: "frontend",
+        image:
+            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        education: "Stanford University",
+        experience: "5 years experience",
+        appliedDate: "Jan 20, 2024",
+        email: "michael.johnson@example.com",
+        phone: "(555) 123-4567",
+        location: "San Francisco, CA",
+        skills: ["JavaScript", "React", "TypeScript", "HTML/CSS", "Redux", "Node.js"],
+        resumeUrl: "/resume-michael-johnson.pdf",
+        coverLetter: "I am excited to apply for the Senior Frontend Developer position...",
     },
     {
-        id: '2',
-        name: 'Sarah Williams',
-        position: 'UI/UX Designer',
-        status: 'review',
-        jobType: 'ui-ux',
-        image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        education: 'Rhode Island School of Design',
-        experience: '3 years experience',
-        appliedDate: 'Jan 18, 2023',
-        email: 'sarah.williams@example.com',
-        phone: '(555) 234-5678',
-        skills: ['Figma', 'Adobe XD', 'Sketch', 'Prototyping', 'User Research']
+        id: "2",
+        name: "Sarah Williams",
+        position: "UI/UX Designer",
+        jobId: "2",
+        status: "review",
+        jobType: "ui-ux",
+        image:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        education: "Rhode Island School of Design",
+        experience: "3 years experience",
+        appliedDate: "Jan 18, 2024",
+        email: "sarah.williams@example.com",
+        phone: "(555) 234-5678",
+        location: "New York, NY",
+        skills: ["Figma", "Adobe XD", "Sketch", "Prototyping", "User Research"],
+        resumeUrl: "/resume-sarah-williams.pdf",
+        coverLetter: "With my passion for creating intuitive user experiences...",
     },
     {
-        id: '3',
-        name: 'David Chen',
-        position: 'Data Scientist',
-        status: 'interview',
-        jobType: 'data',
-        image: 'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        education: 'MIT',
-        experience: '7 years experience',
-        appliedDate: 'Jan 15, 2023',
-        email: 'david.chen@example.com',
-        phone: '(555) 345-6789',
-        skills: ['Python', 'R', 'Machine Learning', 'SQL', 'TensorFlow']
+        id: "3",
+        name: "David Chen",
+        position: "Data Scientist",
+        jobId: "3",
+        status: "interview",
+        jobType: "data",
+        image:
+            "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        education: "MIT",
+        experience: "7 years experience",
+        appliedDate: "Jan 15, 2024",
+        email: "david.chen@example.com",
+        phone: "(555) 345-6789",
+        location: "Boston, MA",
+        skills: ["Python", "R", "Machine Learning", "SQL", "TensorFlow"],
+        resumeUrl: "/resume-david-chen.pdf",
+        coverLetter: "As a data scientist with 7 years of experience...",
     },
     {
-        id: '4',
-        name: 'Robert Taylor',
-        position: 'DevOps Engineer',
-        status: 'offer',
-        jobType: 'devops',
-        image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        education: 'University of Washington',
-        experience: '6 years experience',
-        appliedDate: 'Jan 10, 2023',
-        email: 'robert.taylor@example.com',
-        phone: '(555) 456-7890',
-        skills: ['AWS', 'Docker', 'Kubernetes', 'Jenkins', 'Terraform']
+        id: "4",
+        name: "Robert Taylor",
+        position: "DevOps Engineer",
+        jobId: "4",
+        status: "offer",
+        jobType: "devops",
+        image:
+            "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        education: "University of Washington",
+        experience: "6 years experience",
+        appliedDate: "Jan 10, 2024",
+        email: "robert.taylor@example.com",
+        phone: "(555) 456-7890",
+        location: "Seattle, WA",
+        skills: ["AWS", "Docker", "Kubernetes", "Jenkins", "Terraform"],
+        resumeUrl: "/resume-robert-taylor.pdf",
+        coverLetter: "I am thrilled to apply for the DevOps Engineer position...",
     },
     {
-        id: '5',
-        name: 'Jessica Martinez',
-        position: 'Senior Frontend Developer',
-        status: 'hired',
-        jobType: 'frontend',
-        image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        education: 'UC Berkeley',
-        experience: '8 years experience',
-        appliedDate: 'Dec 15, 2022',
-        email: 'jessica.martinez@example.com',
-        phone: '(555) 567-8901',
-        skills: ['JavaScript', 'React', 'Vue.js', 'TypeScript', 'GraphQL']
+        id: "5",
+        name: "Jessica Martinez",
+        position: "Senior Frontend Developer",
+        jobId: "1",
+        status: "hired",
+        jobType: "frontend",
+        image:
+            "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        education: "UC Berkeley",
+        experience: "8 years experience",
+        appliedDate: "Dec 15, 2023",
+        email: "jessica.martinez@example.com",
+        phone: "(555) 567-8901",
+        location: "Los Angeles, CA",
+        skills: ["JavaScript", "React", "Vue.js", "TypeScript", "GraphQL"],
+        resumeUrl: "/resume-jessica-martinez.pdf",
+        coverLetter: "With 8 years of frontend development experience...",
     },
     {
-        id: '6',
-        name: 'Thomas Wilson',
-        position: 'UI/UX Designer',
-        status: 'rejected',
-        jobType: 'ui-ux',
-        image: 'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        education: 'Parsons School of Design',
-        experience: '2 years experience',
-        appliedDate: 'Dec 10, 2022',
-        email: 'thomas.wilson@example.com',
-        phone: '(555) 678-9012',
-        skills: ['Photoshop', 'Illustrator', 'InDesign', 'Wireframing']
-    }
+        id: "6",
+        name: "Thomas Wilson",
+        position: "UI/UX Designer",
+        jobId: "2",
+        status: "rejected",
+        jobType: "ui-ux",
+        image:
+            "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        education: "Parsons School of Design",
+        experience: "2 years experience",
+        appliedDate: "Dec 10, 2023",
+        email: "thomas.wilson@example.com",
+        phone: "(555) 678-9012",
+        location: "Austin, TX",
+        skills: ["Photoshop", "Illustrator", "InDesign", "Wireframing"],
+        resumeUrl: "/resume-thomas-wilson.pdf",
+        coverLetter: "I am eager to contribute my design skills...",
+    },
 ]
 
 const statusConfig = {
-    new: { label: 'New', className: 'bg-green-100 text-green-800' },
-    review: { label: 'In Review', className: 'bg-yellow-100 text-yellow-800' },
-    interview: { label: 'Interview', className: 'bg-blue-100 text-blue-800' },
-    offer: { label: 'Offer Sent', className: 'bg-purple-100 text-purple-800' },
-    hired: { label: 'Hired', className: 'bg-green-100 text-green-800' },
-    rejected: { label: 'Rejected', className: 'bg-red-100 text-red-800' }
+    new: { label: "New", className: "bg-blue-100 text-blue-800" },
+    review: { label: "In Review", className: "bg-yellow-100 text-yellow-800" },
+    interview: { label: "Interview", className: "bg-purple-100 text-purple-800" },
+    offer: { label: "Offer Sent", className: "bg-green-100 text-green-800" },
+    hired: { label: "Hired", className: "bg-green-100 text-green-800" },
+    rejected: { label: "Rejected", className: "bg-red-100 text-red-800" },
 }
 
 export default function ApplicationsPage() {
     const [applications, setApplications] = useState<Application[]>(mockApplications)
     const [filteredApplications, setFilteredApplications] = useState<Application[]>(mockApplications)
-    const [searchTerm, setSearchTerm] = useState('')
-    const [jobFilter, setJobFilter] = useState('all')
-    const [statusFilter, setStatusFilter] = useState('all')
-    const [selectedApplication, setSelectedApplication] = useState<Application | null>(null)
-    const [showProfileModal, setShowProfileModal] = useState(false)
-    const [showStatusModal, setShowStatusModal] = useState(false)
-    const [showMobileMenu, setShowMobileMenu] = useState(false)
-    const [showUserMenu, setShowUserMenu] = useState(false)
-    const [newStatus, setNewStatus] = useState<Application['status']>('new')
-    const [statusNotes, setStatusNotes] = useState('')
-    const [applicantNotes, setApplicantNotes] = useState('')
-    const [showDetailsModal, setShowDetailsModal] = useState(false)
-
+    const [searchTerm, setSearchTerm] = useState("")
+    const [jobFilter, setJobFilter] = useState("all")
+    const [statusFilter, setStatusFilter] = useState("all")
+    const [sortBy, setSortBy] = useState("newest")
 
     const { toast } = useToast()
 
@@ -141,364 +173,322 @@ export default function ApplicationsPage() {
 
         // Apply search filter
         if (searchTerm) {
-            filtered = filtered.filter(app =>
-                app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                app.position.toLowerCase().includes(searchTerm.toLowerCase())
+            filtered = filtered.filter(
+                (app) =>
+                    app.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    app.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    app.email.toLowerCase().includes(searchTerm.toLowerCase()),
             )
         }
 
         // Apply job filter
-        if (jobFilter !== 'all') {
-            filtered = filtered.filter(app => app.jobType === jobFilter)
+        if (jobFilter !== "all") {
+            filtered = filtered.filter((app) => app.jobType === jobFilter)
         }
 
         // Apply status filter
-        if (statusFilter !== 'all') {
-            filtered = filtered.filter(app => app.status === statusFilter)
+        if (statusFilter !== "all") {
+            filtered = filtered.filter((app) => app.status === statusFilter)
         }
+
+        // Apply sorting
+        filtered.sort((a, b) => {
+            switch (sortBy) {
+                case "newest":
+                    return new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime()
+                case "oldest":
+                    return new Date(a.appliedDate).getTime() - new Date(b.appliedDate).getTime()
+                case "name":
+                    return a.name.localeCompare(b.name)
+                default:
+                    return 0
+            }
+        })
 
         setFilteredApplications(filtered)
-    }, [applications, searchTerm, jobFilter, statusFilter])
+    }, [applications, searchTerm, jobFilter, statusFilter, sortBy])
 
-    const handleViewProfile = (application: Application) => {
-        setSelectedApplication(application)
-        setApplicantNotes(application.notes || '')
-        setShowProfileModal(true)
-    }
-
-    const handleUpdateStatus = () => {
-        if (!selectedApplication) return
-
-        const updatedApplications = applications.map(app =>
-            app.id === selectedApplication.id
-                ? { ...app, status: newStatus }
-                : app
+    const handleQuickStatusUpdate = (applicationId: string, newStatus: Application["status"]) => {
+        const updatedApplications = applications.map((app) =>
+            app.id === applicationId ? { ...app, status: newStatus } : app,
         )
-
         setApplications(updatedApplications)
-        setSelectedApplication({ ...selectedApplication, status: newStatus })
-        setShowStatusModal(false)
 
+        const application = applications.find((app) => app.id === applicationId)
         toast({
-            title: "Status Updated!",
-            description: `Applicant status has been updated to ${statusConfig[newStatus].label}.`,
+            title: "Status Updated",
+            description: `${application?.name}'s status has been updated to ${statusConfig[newStatus].label}`,
         })
     }
 
-    const handleSaveNotes = () => {
-        if (!selectedApplication) return
-
-        const updatedApplications = applications.map(app =>
-            app.id === selectedApplication.id
-                ? { ...app, notes: applicantNotes }
-                : app
-        )
-
-        setApplications(updatedApplications)
-        setSelectedApplication({ ...selectedApplication, notes: applicantNotes })
-
-        toast({
-            title: "Notes Saved!",
-            description: "Your notes have been saved successfully.",
-        })
-    }
-
-    const handleScheduleInterview = (application: Application) => {
-        const updatedApplications = applications.map(app =>
-            app.id === application.id
-                ? { ...app, status: 'interview' as const }
-                : app
-        )
-
-        setApplications(updatedApplications)
-
-        toast({
-            title: "Interview Scheduled!",
-            description: `Interview has been scheduled for ${application.name}.`,
-        })
-    }
-
-    const handleSendOffer = (application: Application) => {
-        const updatedApplications = applications.map(app =>
-            app.id === application.id
-                ? { ...app, status: 'offer' as const }
-                : app
-        )
-
-        setApplications(updatedApplications)
-
-        toast({
-            title: "Offer Sent!",
-            description: `An offer has been sent to ${application.name}.`,
-        })
-    }
-
-    const handleReconsider = (application: Application) => {
-        const updatedApplications = applications.map(app =>
-            app.id === application.id
-                ? { ...app, status: 'review' as const }
-                : app
-        )
-
-        setApplications(updatedApplications)
-
-        toast({
-            title: "Application Reconsidered!",
-            description: `The application of ${application.name} has been moved back to review.`,
-        })
-    }
-
-    const renderActionButtons = (application: Application) => {
-        const baseButtonClass = "inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-
-        switch (application.status) {
-            case 'new':
-            case 'review':
-                return (
-                    <>
-                        <button
-                            onClick={() => handleViewProfile(application)}
-                            className={cn(baseButtonClass, "border border-gray-300 shadow-sm text-gray-700 bg-white hover:bg-gray-50")}
-                        >
-                            View Profile
-                        </button>
-                        <button
-                            onClick={() => handleScheduleInterview(application)}
-                            className={cn(baseButtonClass, "border border-transparent shadow-sm text-white bg-blue-600 hover:bg-blue-700")}
-                        >
-                            Schedule Interview
-                        </button>
-                    </>
-                )
-            case 'interview':
-                return (
-                    <>
-                        <button
-                            onClick={() => handleViewProfile(application)}
-                            className={cn(baseButtonClass, "border border-gray-300 shadow-sm text-gray-700 bg-white hover:bg-gray-50")}
-                        >
-                            View Profile
-                        </button>
-                        <button
-                            onClick={() => handleSendOffer(application)}
-                            className={cn(baseButtonClass, "border border-transparent shadow-sm text-white bg-blue-600 hover:bg-blue-700")}
-                        >
-                            Send Offer
-                        </button>
-                    </>
-                )
-            case 'offer':
-                return (
-                    <>
-                        <button
-                            onClick={() => handleViewProfile(application)}
-                            className={cn(baseButtonClass, "border border-gray-300 shadow-sm text-gray-700 bg-white hover:bg-gray-50")}
-                        >
-                            View Profile
-                        </button>
-                        <button
-                            onClick={() => toast({ title: "Checking Status", description: `Checking offer status for ${application.name}` })}
-                            className={cn(baseButtonClass, "border border-gray-300 shadow-sm text-gray-700 bg-white hover:bg-gray-50")}
-                        >
-                            Check Status
-                        </button>
-                    </>
-                )
-            case 'hired':
-                return (
-                    <>
-                        <button
-                            onClick={() => handleViewProfile(application)}
-                            className={cn(baseButtonClass, "border border-gray-300 shadow-sm text-gray-700 bg-white hover:bg-gray-50")}
-                        >
-                            View Profile
-                        </button>
-                        <button
-                            onClick={() => toast({ title: "Onboarding", description: `Starting onboarding process for ${application.name}` })}
-                            className={cn(baseButtonClass, "border border-transparent shadow-sm text-white bg-blue-600 hover:bg-blue-700")}
-                        >
-                            Onboarding
-                        </button>
-                    </>
-                )
-            case 'rejected':
-                return (
-                    <>
-                        <button
-                            onClick={() => handleViewProfile(application)}
-                            className={cn(baseButtonClass, "border border-gray-300 shadow-sm text-gray-700 bg-white hover:bg-gray-50")}
-                        >
-                            View Profile
-                        </button>
-                        <button
-                            onClick={() => handleReconsider(application)}
-                            className={cn(baseButtonClass, "border border-gray-300 shadow-sm text-gray-700 bg-white hover:bg-gray-50")}
-                        >
-                            Reconsider
-                        </button>
-                    </>
-                )
-            default:
-                return null
+    const getStatusCounts = () => {
+        return {
+            all: applications.length,
+            new: applications.filter((app) => app.status === "new").length,
+            review: applications.filter((app) => app.status === "review").length,
+            interview: applications.filter((app) => app.status === "interview").length,
+            offer: applications.filter((app) => app.status === "offer").length,
+            hired: applications.filter((app) => app.status === "hired").length,
+            rejected: applications.filter((app) => app.status === "rejected").length,
         }
     }
+
+    const statusCounts = getStatusCounts()
 
     return (
         <div className="bg-gray-50 min-h-screen">
-            {/* Navigation */}
             <Navbar userType="employer" activePage="jobPostings" />
 
-
-            {/* Main Content */}
             <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
                 <div className="px-4 py-6 sm:px-0">
                     {/* Header */}
                     <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900">Job Applications</h1>
-                        <p className="mt-2 text-gray-600">Manage and review applications for your job postings</p>
+                        <h1 className="text-3xl font-bold text-gray-900">All Job Applications</h1>
+                        <p className="mt-2 text-gray-600">Manage and review applications across all your job postings</p>
+                    </div>
+
+                    {/* Stats Cards */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("all")}>
+                            <CardContent className="p-4 text-center">
+                                <div className="text-2xl font-bold text-gray-900">{statusCounts.all}</div>
+                                <div className="text-sm text-gray-500">Total</div>
+                            </CardContent>
+                        </Card>
+                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("new")}>
+                            <CardContent className="p-4 text-center">
+                                <div className="text-2xl font-bold text-blue-600">{statusCounts.new}</div>
+                                <div className="text-sm text-gray-500">New</div>
+                            </CardContent>
+                        </Card>
+                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("review")}>
+                            <CardContent className="p-4 text-center">
+                                <div className="text-2xl font-bold text-yellow-600">{statusCounts.review}</div>
+                                <div className="text-sm text-gray-500">Review</div>
+                            </CardContent>
+                        </Card>
+                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("interview")}>
+                            <CardContent className="p-4 text-center">
+                                <div className="text-2xl font-bold text-purple-600">{statusCounts.interview}</div>
+                                <div className="text-sm text-gray-500">Interview</div>
+                            </CardContent>
+                        </Card>
+                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("offer")}>
+                            <CardContent className="p-4 text-center">
+                                <div className="text-2xl font-bold text-green-600">{statusCounts.offer}</div>
+                                <div className="text-sm text-gray-500">Offer</div>
+                            </CardContent>
+                        </Card>
+                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("hired")}>
+                            <CardContent className="p-4 text-center">
+                                <div className="text-2xl font-bold text-green-600">{statusCounts.hired}</div>
+                                <div className="text-sm text-gray-500">Hired</div>
+                            </CardContent>
+                        </Card>
+                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("rejected")}>
+                            <CardContent className="p-4 text-center">
+                                <div className="text-2xl font-bold text-red-600">{statusCounts.rejected}</div>
+                                <div className="text-sm text-gray-500">Rejected</div>
+                            </CardContent>
+                        </Card>
                     </div>
 
                     {/* Filters */}
-                    <div className="bg-white p-6 rounded-lg shadow mb-6">
-                        <div className="flex flex-wrap gap-4 items-center">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Job</label>
-                                <select className="border border-gray-300 rounded-md px-3 py-2 text-sm">
-                                    <option>All Jobs</option>
-                                    <option>Frontend Developer</option>
-                                    <option>Backend Developer</option>
-                                    <option>UI/UX Designer</option>
-                                </select>
+                    <Card className="mb-6">
+                        <CardContent className="p-6">
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 md:space-x-4">
+                                <div className="flex-1">
+                                    <div className="relative">
+                                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                                        <Input
+                                            placeholder="Search by name, position, or email..."
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            className="pl-10"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-3">
+                                    <Select value={jobFilter} onValueChange={setJobFilter}>
+                                        <SelectTrigger className="w-[150px]">
+                                            <SelectValue placeholder="All Jobs" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Jobs</SelectItem>
+                                            <SelectItem value="frontend">Frontend</SelectItem>
+                                            <SelectItem value="ui-ux">UI/UX</SelectItem>
+                                            <SelectItem value="data">Data Science</SelectItem>
+                                            <SelectItem value="devops">DevOps</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                                        <SelectTrigger className="w-[150px]">
+                                            <SelectValue placeholder="All Status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Status</SelectItem>
+                                            <SelectItem value="new">New</SelectItem>
+                                            <SelectItem value="review">In Review</SelectItem>
+                                            <SelectItem value="interview">Interview</SelectItem>
+                                            <SelectItem value="offer">Offer Sent</SelectItem>
+                                            <SelectItem value="hired">Hired</SelectItem>
+                                            <SelectItem value="rejected">Rejected</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <Select value={sortBy} onValueChange={setSortBy}>
+                                        <SelectTrigger className="w-[150px]">
+                                            <SelectValue placeholder="Sort by" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="newest">Newest First</SelectItem>
+                                            <SelectItem value="oldest">Oldest First</SelectItem>
+                                            <SelectItem value="name">Name A-Z</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <Button variant="outline">
+                                        <Download className="w-4 h-4 mr-2" />
+                                        Export
+                                    </Button>
+                                </div>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                                <select className="border border-gray-300 rounded-md px-3 py-2 text-sm">
-                                    <option>All Status</option>
-                                    <option>New</option>
-                                    <option>Under Review</option>
-                                    <option>Shortlisted</option>
-                                    <option>Rejected</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
-                                <select className="border border-gray-300 rounded-md px-3 py-2 text-sm">
-                                    <option>Last 7 days</option>
-                                    <option>Last 30 days</option>
-                                    <option>Last 3 months</option>
-                                    <option>All time</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
 
                     {/* Applications List */}
-                    <div className="bg-white shadow rounded-lg">
-                        <div className="px-6 py-4 border-b border-gray-200">
-                            <h2 className="text-lg font-medium text-gray-900">Recent Applications</h2>
-                        </div>
-                        <div className="divide-y divide-gray-200">
-                            {/* Application Item */}
-                            <div className="p-6 hover:bg-gray-50">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="flex-shrink-0">
-                                            <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
-                                                <span className="text-blue-600 font-medium text-lg">JD</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-medium text-gray-900">John Doe</h3>
-                                            <p className="text-sm text-gray-500">Applied for Frontend Developer</p>
-                                            <p className="text-sm text-gray-400">Applied 2 hours ago</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center space-x-3">
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                            New
-                                        </span>
-                                        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                            View Details
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Applications ({filteredApplications.length})</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <div className="divide-y divide-gray-200">
+                                {filteredApplications.map((application) => (
+                                    <div key={application.id} className="p-6 hover:bg-gray-50 transition-colors">
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex items-start space-x-4 flex-1">
+                                                <Avatar className="w-12 h-12">
+                                                    <AvatarImage src={application.image || "/placeholder.svg"} alt={application.name} />
+                                                    <AvatarFallback>
+                                                        {application.name
+                                                            .split(" ")
+                                                            .map((n) => n[0])
+                                                            .join("")}
+                                                    </AvatarFallback>
+                                                </Avatar>
 
-                            {/* More Application Items */}
-                            <div className="p-6 hover:bg-gray-50">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="flex-shrink-0">
-                                            <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
-                                                <span className="text-green-600 font-medium text-lg">SM</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-medium text-gray-900">Sarah Miller</h3>
-                                            <p className="text-sm text-gray-500">Applied for UI/UX Designer</p>
-                                            <p className="text-sm text-gray-400">Applied 1 day ago</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center space-x-3">
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            Under Review
-                                        </span>
-                                        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                            View Details
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center space-x-3 mb-2">
+                                                        <h3 className="text-lg font-medium text-gray-900">{application.name}</h3>
+                                                        <Badge className={statusConfig[application.status].className}>
+                                                            {statusConfig[application.status].label}
+                                                        </Badge>
+                                                    </div>
 
-                            <div className="p-6 hover:bg-gray-50">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="flex-shrink-0">
-                                            <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center">
-                                                <span className="text-purple-600 font-medium text-lg">MJ</span>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-500 mb-3">
+                                                        <div className="flex items-center">
+                                                            <Mail className="w-4 h-4 mr-2" />
+                                                            {application.email}
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <Phone className="w-4 h-4 mr-2" />
+                                                            {application.phone}
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <MapPin className="w-4 h-4 mr-2" />
+                                                            {application.location}
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <Calendar className="w-4 h-4 mr-2" />
+                                                            Applied {application.appliedDate}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="mb-3">
+                                                        <p className="text-sm text-gray-700 mb-2">
+                                                            Applied for <span className="font-medium">{application.position}</span> •{" "}
+                                                            {application.experience}
+                                                        </p>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {application.skills.slice(0, 4).map((skill, index) => (
+                                                                <Badge key={index} variant="outline" className="text-xs">
+                                                                    {skill}
+                                                                </Badge>
+                                                            ))}
+                                                            {application.skills.length > 4 && (
+                                                                <Badge variant="outline" className="text-xs">
+                                                                    +{application.skills.length - 4} more
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center space-x-3 ml-4">
+                                                <Select
+                                                    value={application.status}
+                                                    onValueChange={(value) =>
+                                                        handleQuickStatusUpdate(application.id, value as Application["status"])
+                                                    }
+                                                >
+                                                    <SelectTrigger className="w-[120px]">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="new">New</SelectItem>
+                                                        <SelectItem value="review">Review</SelectItem>
+                                                        <SelectItem value="interview">Interview</SelectItem>
+                                                        <SelectItem value="offer">Offer</SelectItem>
+                                                        <SelectItem value="hired">Hired</SelectItem>
+                                                        <SelectItem value="rejected">Rejected</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <Link href={`/employer/applications/${application.id}`}>
+                                                    <Button variant="outline" size="sm">
+                                                        <Eye className="w-4 h-4 mr-1" />
+                                                        View Details
+                                                    </Button>
+                                                </Link>
                                             </div>
                                         </div>
-                                        <div>
-                                            <h3 className="text-lg font-medium text-gray-900">Michael Johnson</h3>
-                                            <p className="text-sm text-gray-500">Applied for Backend Developer</p>
-                                            <p className="text-sm text-gray-400">Applied 3 days ago</p>
+                                    </div>
+                                ))}
+
+                                {filteredApplications.length === 0 && (
+                                    <div className="p-12 text-center">
+                                        <div className="text-gray-400 mb-4">
+                                            <Eye className="w-12 h-12 mx-auto" />
                                         </div>
+                                        <h3 className="text-lg font-medium text-gray-900 mb-2">No applications found</h3>
+                                        <p className="text-gray-500">Try adjusting your search or filter criteria.</p>
                                     </div>
-                                    <div className="flex items-center space-x-3">
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                            Shortlisted
-                                        </span>
-                                        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                            View Details
-                                        </button>
-                                    </div>
-                                </div>
+                                )}
                             </div>
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
 
                     {/* Pagination */}
                     <div className="mt-6 flex items-center justify-between">
                         <div className="text-sm text-gray-700">
-                            Showing <span className="font-medium">1</span> to <span className="font-medium">10</span> of{' '}
-                            <span className="font-medium">97</span> results
+                            Showing <span className="font-medium">1</span> to{" "}
+                            <span className="font-medium">{Math.min(10, filteredApplications.length)}</span> of{" "}
+                            <span className="font-medium">{filteredApplications.length}</span> results
                         </div>
                         <div className="flex space-x-2">
-                            <button className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                            <Button variant="outline" size="sm" disabled>
                                 Previous
-                            </button>
-                            <button className="px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700">
+                            </Button>
+                            <Button variant="outline" size="sm" className="bg-blue-50 border-blue-500 text-blue-600">
                                 1
-                            </button>
-                            <button className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                            </Button>
+                            <Button variant="outline" size="sm">
                                 2
-                            </button>
-                            <button className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                            </Button>
+                            <Button variant="outline" size="sm">
                                 3
-                            </button>
-                            <button className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                            </Button>
+                            <Button variant="outline" size="sm">
                                 Next
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -506,4 +496,3 @@ export default function ApplicationsPage() {
         </div>
     )
 }
-
