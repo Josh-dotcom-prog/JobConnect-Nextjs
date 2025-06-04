@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useToast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,48 +8,26 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import {
-    Bell,
-    ArrowLeft,
-    Save,
-    Plus,
-    Edit,
-    Trash2,
-    Menu,
-    X,
-    Check,
-    Upload
-} from 'lucide-react'
+import { Bell, ArrowLeft, Save, Plus, Edit, Trash2, Menu, X, Check, Upload } from 'lucide-react'
 import Image from 'next/image'
 
-interface TeamMember {
-    id: string
-    name: string
-    title: string
-    bio?: string
-    photo?: string
-    linkedin?: string
-}
 
 interface CompanyProfile {
     name: string
-    industry: string
     description: string
-    size: string
-    foundedYear: number
-    headquarters: string
-    website: string
+    location: string
     contactEmail: string
     contactPhone: string
-    slogan: string
-    values: string
-    socialMedia: {
-        linkedin: string
-        X: string
-        instagram: string
-        facebook: string
-        youtube: string
-    }
+    logo?: string // Add this line
+}
+
+interface ValidationErrors {
+    name?: string
+    description?: string
+    location?: string
+    contactEmail?: string
+    contactPhone?: string
+    logo?: string // Add this line
 }
 
 export default function CompanyProfilePage() {
@@ -57,132 +35,219 @@ export default function CompanyProfilePage() {
     const [activeTab, setActiveTab] = useState('basic-info')
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [userMenuOpen, setUserMenuOpen] = useState(false)
-    // const [teamModalOpen, setTeamModalOpen] = useState(false)
-    // const [editingMember, setEditingMember] = useState<TeamMember | null>(null)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [errors, setErrors] = useState<ValidationErrors>({})
+    const [touched, setTouched] = useState<Record<string, boolean>>({})
+    const [logoFile, setLogoFile] = useState<File | null>(null)
+    const [logoPreview, setLogoPreview] = useState<string | null>(null)
 
     const [profile, setProfile] = useState<CompanyProfile>({
         name: '',
-        industry: 'technology',
         description: '',
-        size: '51-200',
-        foundedYear: 2010,
-        headquarters: '',
-        website: '',
+        location: '',
         contactEmail: '',
         contactPhone: '',
-        slogan: '',
-        values: 'Innovation, Integrity, Collaboration, Excellence, Customer Focus',
-        socialMedia: {
-            linkedin: 'https://www.linkedin.com/company/techcorp',
-            X: 'https://x.com/techcorp',
-            instagram: 'https://www.instagram.com/techcorp',
-            facebook: 'https://www.facebook.com/techcorp',
-            youtube: 'https://www.youtube.com/techcorp'
-        }
     })
 
-    // const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
-    //     {
-    //         id: '1',
-    //         name: 'Sarah Johnson',
-    //         title: 'CEO & Founder',
-    //         photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-    //     },
-    //     {
-    //         id: '2',
-    //         name: 'Michael Chen',
-    //         title: 'CTO',
-    //         photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-    //     },
-    //     {
-    //         id: '3',
-    //         name: 'Robert Taylor',
-    //         title: 'VP of Engineering',
-    //         photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-    //     },
-    //     {
-    //         id: '4',
-    //         name: 'Jessica Martinez',
-    //         title: 'Head of HR',
-    //         photo: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-    //     }
-    // ])
+    // Validation functions
+    const validateEmail = (email: string): boolean => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        return emailRegex.test(email)
+    }
 
-    // const [newMember, setNewMember] = useState<Partial<TeamMember>>({
-    //     name: '',
-    //     title: '',
-    //     bio: '',
-    //     linkedin: ''
-    // })
+    const validatePhone = (phone: string): boolean => {
+        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/
+        return phoneRegex.test(phone.replace(/[\s\-$$$$]/g, ''))
+    }
+
+    const validateField = (field: keyof CompanyProfile, value: string | undefined): string | undefined => {
+        // If value is undefined, treat it as an empty string
+        const val = value || '';
+
+        switch (field) {
+            case 'name':
+                if (!val.trim()) return 'Company name is required'
+                if (val.trim().length < 2) return 'Company name must be at least 2 characters'
+                if (val.trim().length > 100) return 'Company name must be less than 100 characters'
+                break
+
+            case 'description':
+                if (!val.trim()) return 'Company description is required'
+                if (val.trim().length < 10) return 'Description must be at least 10 characters'
+                if (val.trim().length > 1000) return 'Description must be less than 1000 characters'
+                break
+
+            case 'location':
+                if (!val.trim()) return 'Location is required'
+                if (val.trim().length < 2) return 'Location must be at least 2 characters'
+                break
+
+            case 'contactEmail':
+                if (!val.trim()) return 'Contact email is required'
+                if (!validateEmail(val)) return 'Please enter a valid email address'
+                break
+
+            case 'contactPhone':
+                if (!val.trim()) return 'Contact phone is required'
+                if (!validatePhone(val)) return 'Please enter a valid phone number'
+                break
+
+            default:
+                break
+        }
+        return undefined
+    }
+
+    const validateForm = (): ValidationErrors => {
+        const newErrors: ValidationErrors = {}
+
+        Object.keys(profile).forEach((key) => {
+            const field = key as keyof CompanyProfile
+            const error = validateField(field, profile[field])
+            if (error) {
+                newErrors[field] = error
+            }
+        })
+
+        return newErrors
+    }
+
+    const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        if (!file) return
+
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']
+        if (!allowedTypes.includes(file.type)) {
+            setErrors(prev => ({ ...prev, logo: 'Please upload a valid image file (JPEG, PNG, or GIF)' }))
+            return
+        }
+
+        // Validate file size (max 5MB)
+        const maxSize = 5 * 1024 * 1024 // 5MB in bytes
+        if (file.size > maxSize) {
+            setErrors(prev => ({ ...prev, logo: 'Image size must be less than 5MB' }))
+            return
+        }
+
+        // Clear any existing logo errors
+        setErrors(prev => ({ ...prev, logo: undefined }))
+
+        // Set the file and create preview
+        setLogoFile(file)
+        const reader = new FileReader()
+        reader.onload = (e) => {
+            const result = e.target?.result as string
+            setLogoPreview(result)
+            setProfile(prev => ({ ...prev, logo: result }))
+        }
+        reader.readAsDataURL(file)
+    }
+
+    const removeLogo = () => {
+        setLogoFile(null)
+        setLogoPreview(null)
+        setProfile(prev => ({ ...prev, logo: undefined }))
+        setErrors(prev => ({ ...prev, logo: undefined }))
+
+        // Reset the file input
+        const fileInput = document.getElementById('logo-upload') as HTMLInputElement
+        if (fileInput) {
+            fileInput.value = ''
+        }
+    }
+
+    const handleFieldChange = (field: keyof CompanyProfile, value: string) => {
+        setProfile(prev => ({ ...prev, [field]: value }))
+
+        // Clear error for this field when user starts typing
+        if (errors[field]) {
+            setErrors(prev => ({ ...prev, [field]: undefined }))
+        }
+
+        // Validate field on change if it was previously touched
+        if (touched[field]) {
+            const error = validateField(field, value)
+            setErrors(prev => ({ ...prev, [field]: error }))
+        }
+    }
+
+    const handleFieldBlur = (field: keyof CompanyProfile) => {
+        setTouched(prev => ({ ...prev, [field]: true }))
+        const error = validateField(field, profile[field])
+        setErrors(prev => ({ ...prev, [field]: error }))
+    }
+
+    // Add this useEffect after the state declarations
+    useEffect(() => {
+        // Load saved profile data from localStorage
+        const savedProfile = localStorage.getItem('companyProfile')
+        if (savedProfile) {
+            try {
+                const parsedProfile = JSON.parse(savedProfile)
+                setProfile(parsedProfile)
+                if (parsedProfile.logo) {
+                    setLogoPreview(parsedProfile.logo)
+                }
+            } catch (error) {
+                console.error('Error loading saved profile:', error)
+            }
+        }
+    }, [])
 
     const tabs = [
         { id: 'basic-info', label: 'Basic Information' },
-        { id: 'branding', label: 'Branding' },
-        // { id: 'team', label: 'Team Members' },
-        { id: 'social', label: 'Social Media' }
     ]
 
-    const handleSaveProfile = () => {
-        // In a real app, this would be an API call
-        toast({
-            title: 'Profile Saved!',
-            description: 'Your company profile has been updated successfully.',
-        })
+    const handleSaveProfile = async () => {
+        // Mark all fields as touched
+        const allFields = Object.keys(profile) as (keyof CompanyProfile)[]
+        const newTouched = allFields.reduce((acc, field) => ({ ...acc, [field]: true }), {})
+        setTouched(newTouched)
+
+        // Validate entire form
+        const formErrors = validateForm()
+        setErrors(formErrors)
+
+        // Check if there are any errors
+        if (Object.keys(formErrors).length > 0) {
+            toast({
+                title: 'Validation Error',
+                description: 'Please fix the errors below before saving.',
+                variant: 'destructive'
+            })
+            return
+        }
+
+        setIsSubmitting(true)
+
+        try {
+            // Show loading state
+            toast({
+                title: 'Saving...',
+                description: 'Updating your company profile.',
+            })
+
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 1500))
+
+            // In a real app, this would be an API call
+            localStorage.setItem('companyProfile', JSON.stringify(profile))
+
+            toast({
+                title: 'Profile Saved!',
+                description: 'Your company profile has been updated successfully.',
+            })
+        } catch (error) {
+            toast({
+                title: 'Error',
+                description: 'Failed to save profile. Please try again.',
+                variant: 'destructive'
+            })
+        } finally {
+            setIsSubmitting(false)
+        }
     }
-
-    // const handleAddTeamMember = () => {
-    //     if (!newMember.name || !newMember.title) {
-    //         toast({
-    //             title: 'Error',
-    //             description: 'Please fill in all required fields.',
-    //             variant: 'destructive'
-    //         })
-    //         return
-    //     }
-
-    //     const member: TeamMember = {
-    //         id: Date.now().toString(),
-    //         name: newMember.name!,
-    //         title: newMember.title!,
-    //         bio: newMember.bio,
-    //         linkedin: newMember.linkedin
-    //     }
-
-    //     if (editingMember) {
-    //         setTeamMembers(prev => prev.map(m => m.id === editingMember.id ? { ...member, id: editingMember.id } : m))
-    //         toast({
-    //             title: 'Team Member Updated!',
-    //             description: `${member.name} has been updated.`,
-    //         })
-    //     } else {
-    //         setTeamMembers(prev => [member, ...prev])
-    //         toast({
-    //             title: 'Team Member Added!',
-    //             description: `${member.name} has been added to your team.`,
-    //         })
-    //     }
-
-    //     setNewMember({ name: '', title: '', bio: '', linkedin: '' })
-    //     setEditingMember(null)
-    //     setTeamModalOpen(false)
-    // }
-
-    // const handleEditMember = (member: TeamMember) => {
-    //     setEditingMember(member)
-    //     setNewMember(member)
-    //     setTeamModalOpen(true)
-    // }
-
-    // const handleDeleteMember = (memberId: string) => {
-    //     const member = teamMembers.find(m => m.id === memberId)
-    //     if (member && confirm(`Are you sure you want to remove ${member.name} from your team?`)) {
-    //         setTeamMembers(prev => prev.filter(m => m.id !== memberId))
-    //         toast({
-    //             title: 'Team Member Removed',
-    //             description: `${member.name} has been removed from your team.`,
-    //         })
-    //     }
-    // }
 
     return (
         <div className="bg-gray-50 min-h-screen">
@@ -197,7 +262,7 @@ export default function CompanyProfilePage() {
                                 </span>
                             </div>
                             <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-                                <a href="/employer/dashboard" className="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-yellow-400">
+                                <a href="/employer/dashboard" className="text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-bold hover:text-yellow-400">
                                     <ArrowLeft className="w-4 h-4 mr-2" />
                                     Back to Dashboard
                                 </a>
@@ -216,13 +281,9 @@ export default function CompanyProfilePage() {
                                     className="max-w-xs bg-white flex items-center text-sm rounded-full"
                                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                                 >
-                                    <Image
-                                        className="h-8 w-8 rounded-full"
-                                        src="/images/logo2.jpeg"
-                                        alt="logo"
-                                        width={32}
-                                        height={32}
-                                    />
+                                    <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                                        <span className="text-white text-sm font-bold">JC</span>
+                                    </div>
                                 </Button>
 
                                 {userMenuOpen && (
@@ -250,10 +311,10 @@ export default function CompanyProfilePage() {
                 {mobileMenuOpen && (
                     <div className="sm:hidden">
                         <div className="pt-2 pb-3 space-y-1">
-                            <a href="/employer/dashboard" className="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Dashboard</a>
-                            <a href="/employer/jobs" className="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Job Postings</a>
-                            <a href="/employer/applications" className="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Applications</a>
-                            <a href="/employer/profile" className="bg-blue-50 border-blue-500 text-blue-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Company Profile</a>
+                            <a href="/employer/dashboard" className="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-bold">Dashboard</a>
+                            <a href="/employer/jobs" className="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-bold">Job Postings</a>
+                            <a href="/employer/applications" className="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-bold">Applications</a>
+                            <a href="/employer/profile" className="bg-blue-50 border-blue-500 text-blue-700 block pl-3 pr-4 py-2 border-l-4 text-base font-bold">Company Profile</a>
                         </div>
                     </div>
                 )}
@@ -268,9 +329,13 @@ export default function CompanyProfilePage() {
                                 <p className="mt-1 text-sm text-gray-600">Manage your company information and branding</p>
                             </div>
                             <div className="mt-4 flex md:mt-0 md:ml-4">
-                                <Button onClick={handleSaveProfile} className="ml-3">
+                                <Button
+                                    onClick={handleSaveProfile}
+                                    className="ml-3"
+                                    disabled={isSubmitting}
+                                >
                                     <Save className="w-4 h-4 mr-2" />
-                                    Save Changes
+                                    {isSubmitting ? 'Saving...' : 'Save Changes'}
                                 </Button>
                             </div>
                         </div>
@@ -301,7 +366,7 @@ export default function CompanyProfilePage() {
                                             <button
                                                 key={tab.id}
                                                 onClick={() => setActiveTab(tab.id)}
-                                                className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
+                                                className={`whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm ${activeTab === tab.id
                                                     ? 'border-blue-500 text-blue-600'
                                                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                                     }`}
@@ -318,278 +383,174 @@ export default function CompanyProfilePage() {
                         {activeTab === 'basic-info' && (
                             <Card className="mb-6">
                                 <CardContent className="p-6">
-                                    <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                                    <div className="space-y-6">
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="company-name" className="block text-sm font-medium text-gray-700">Company Name</label>
+                                            <label htmlFor="company-name" className="block text-sm font-bold text-gray-700">
+                                                Company Name *
+                                            </label>
                                             <Input
                                                 id="company-name"
                                                 value={profile.name}
-                                                onChange={(e) => setProfile(prev => ({ ...prev, name: e.target.value }))}
-                                                className="mt-1"
+                                                onChange={(e) => handleFieldChange('name', e.target.value)}
+                                                onBlur={() => handleFieldBlur('name')}
+                                                className={`mt-1 ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                                placeholder="Enter your company name"
                                             />
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="industry" className="block text-sm font-medium text-gray-700">Industry</label>
-                                            <Select value={profile.industry} onValueChange={(value) => setProfile(prev => ({ ...prev, industry: value }))}>
-                                                <SelectTrigger className="mt-1">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="technology">Technology</SelectItem>
-                                                    <SelectItem value="finance">Finance</SelectItem>
-                                                    <SelectItem value="healthcare">Healthcare</SelectItem>
-                                                    <SelectItem value="education">Education</SelectItem>
-                                                    <SelectItem value="retail">Retail</SelectItem>
-                                                    <SelectItem value="manufacturing">Manufacturing</SelectItem>
-                                                    <SelectItem value="other">Other</SelectItem>
-                                                </SelectContent>
-                                            </Select>
+                                            {errors.name && (
+                                                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                                            )}
                                         </div>
 
                                         <div className="sm:col-span-6">
-                                            <label htmlFor="company-description" className="block text-sm font-medium text-gray-700">Company Description</label>
+                                            <label className="block text-sm font-bold text-gray-700 mb-2">
+                                                Company Logo
+                                            </label>
+                                            <div className="flex items-start space-x-4">
+                                                {/* Logo Preview */}
+                                                <div className="flex-shrink-0">
+                                                    <div className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
+                                                        {logoPreview ? (
+                                                            <img
+                                                                src={logoPreview || "/placeholder.svg"}
+                                                                alt="Company logo preview"
+                                                                className="w-full h-full object-cover rounded-lg"
+                                                            />
+                                                        ) : (
+                                                            <div className="text-center">
+                                                                <Upload className="w-8 h-8 text-gray-400 mx-auto mb-1" />
+                                                                <span className="text-xs text-gray-500">Logo</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Upload Controls */}
+                                                <div className="flex-1">
+                                                    <div className="flex flex-wrap gap-2">
+                                                        <label htmlFor="logo-upload">
+                                                            <Button
+                                                                type="button"
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="cursor-pointer"
+                                                                asChild
+                                                            >
+                                                                <span>
+                                                                    <Upload className="w-4 h-4 mr-2" />
+                                                                    {logoPreview ? 'Change Logo' : 'Upload Logo'}
+                                                                </span>
+                                                            </Button>
+                                                        </label>
+                                                        {logoPreview && (
+                                                            <Button
+                                                                type="button"
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={removeLogo}
+                                                                className="text-red-600 hover:text-red-700"
+                                                            >
+                                                                <X className="w-4 h-4 mr-2" />
+                                                                Remove
+                                                            </Button>
+                                                        )}
+                                                    </div>
+                                                    <input
+                                                        id="logo-upload"
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={handleLogoUpload}
+                                                        className="hidden"
+                                                    />
+                                                    <p className="text-xs text-gray-500 mt-1">
+                                                        Recommended: Square image, max 5MB (JPEG, PNG, or GIF)
+                                                    </p>
+                                                    {errors.logo && (
+                                                        <p className="mt-1 text-sm text-red-600">{errors.logo}</p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="sm:col-span-6">
+                                            <label htmlFor="company-description" className="block text-sm font-bold text-gray-700">
+                                                Company Description *
+                                            </label>
                                             <Textarea
                                                 id="company-description"
                                                 rows={4}
                                                 value={profile.description}
-                                                onChange={(e) => setProfile(prev => ({ ...prev, description: e.target.value }))}
-                                                className="mt-1"
+                                                onChange={(e) => handleFieldChange('description', e.target.value)}
+                                                onBlur={() => handleFieldBlur('description')}
+                                                className={`mt-1 ${errors.description ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                                placeholder="Describe your company, its mission, and what makes it unique..."
                                             />
-                                            <p className="mt-2 text-sm text-gray-500">Brief description of your company that will appear on your profile and job listings.</p>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="company-size" className="block text-sm font-medium text-gray-700">Company Size</label>
-                                            <Select value={profile.size} onValueChange={(value) => setProfile(prev => ({ ...prev, size: value }))}>
-                                                <SelectTrigger className="mt-1">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="1-10">1-10 employees</SelectItem>
-                                                    <SelectItem value="11-50">11-50 employees</SelectItem>
-                                                    <SelectItem value="51-200">51-200 employees</SelectItem>
-                                                    <SelectItem value="201-500">201-500 employees</SelectItem>
-                                                    <SelectItem value="501-1000">501-1000 employees</SelectItem>
-                                                    <SelectItem value="1001+">1001+ employees</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="founded-year" className="block text-sm font-medium text-gray-700">Founded Year</label>
-                                            <Input
-                                                id="founded-year"
-                                                type="number"
-                                                min="1900"
-                                                max="2023"
-                                                value={profile.foundedYear}
-                                                onChange={(e) => setProfile(prev => ({ ...prev, foundedYear: parseInt(e.target.value) }))}
-                                                className="mt-1"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-6">
-                                            <label htmlFor="headquarters" className="block text-sm font-medium text-gray-700">Headquarters</label>
-                                            <Input
-                                                id="headquarters"
-                                                value={profile.headquarters}
-                                                onChange={(e) => setProfile(prev => ({ ...prev, headquarters: e.target.value }))}
-                                                className="mt-1"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-6">
-                                            <label htmlFor="website" className="block text-sm font-medium text-gray-700">Website</label>
-                                            <Input
-                                                id="website"
-                                                type="url"
-                                                value={profile.website}
-                                                onChange={(e) => setProfile(prev => ({ ...prev, website: e.target.value }))}
-                                                className="mt-1"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700">Contact Email</label>
-                                            <Input
-                                                id="contact-email"
-                                                type="email"
-                                                value={profile.contactEmail}
-                                                onChange={(e) => setProfile(prev => ({ ...prev, contactEmail: e.target.value }))}
-                                                className="mt-1"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="contact-phone" className="block text-sm font-medium text-gray-700">Contact Phone</label>
-                                            <Input
-                                                id="contact-phone"
-                                                type="tel"
-                                                value={profile.contactPhone}
-                                                onChange={(e) => setProfile(prev => ({ ...prev, contactPhone: e.target.value }))}
-                                                className="mt-1"
-                                            />
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        )}
-
-                        {/* Branding Tab */}
-                        {activeTab === 'branding' && (
-                            <Card className="mb-6">
-                                <CardContent className="p-6">
-                                    <div className="space-y-6">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700">Company Logo</label>
-                                            <div className="mt-1 flex items-center">
-                                                <span className="h-12 w-12 rounded-full overflow-hidden bg-gray-100">
-                                                    <Image
-                                                        src="/images/logo2.jpeg"
-                                                        alt="Company logo"
-                                                        width={48}
-                                                        height={48}
-                                                        className="h-full w-full object-cover"
-                                                    />
+                                            <div className="flex justify-between items-center mt-1">
+                                                <p className="text-sm text-gray-500">
+                                                    Brief description of your company that will appear on your profile and job listings.
+                                                </p>
+                                                <span className="text-xs text-gray-400">
+                                                    {profile.description.length}/1000
                                                 </span>
-                                                <Button variant="outline" className="ml-5">
-                                                    Change
-                                                </Button>
                                             </div>
+                                            {errors.description && (
+                                                <p className="mt-1 text-sm text-red-600">{errors.description}</p>
+                                            )}
                                         </div>
 
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700">Cover Image</label>
-                                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                                <div className="space-y-1 text-center">
-                                                    <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                                                    <div className="flex text-sm text-gray-600">
-                                                        <label htmlFor="cover-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500">
-                                                            <span>Upload a new image</span>
-                                                            <input id="cover-upload" name="cover-upload" type="file" className="sr-only" />
-                                                        </label>
-                                                    </div>
-                                                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <label htmlFor="company-slogan" className="block text-sm font-medium text-gray-700">Company Slogan</label>
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="location" className="block text-sm font-bold text-gray-700">
+                                                Location *
+                                            </label>
                                             <Input
-                                                id="company-slogan"
-                                                value={profile.slogan}
-                                                onChange={(e) => setProfile(prev => ({ ...prev, slogan: e.target.value }))}
-                                                className="mt-1"
+                                                id="location"
+                                                value={profile.location}
+                                                onChange={(e) => handleFieldChange('location', e.target.value)}
+                                                onBlur={() => handleFieldBlur('location')}
+                                                className={`mt-1 ${errors.location ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                                placeholder="City, State/Country"
                                             />
-                                            <p className="mt-2 text-sm text-gray-500">A short tagline that represents your company's mission.</p>
+                                            {errors.location && (
+                                                <p className="mt-1 text-sm text-red-600">{errors.location}</p>
+                                            )}
                                         </div>
 
-                                        <div>
-                                            <label htmlFor="company-values" className="block text-sm font-medium text-gray-700">Company Values</label>
-                                            <Textarea
-                                                id="company-values"
-                                                rows={4}
-                                                value={profile.values}
-                                                onChange={(e) => setProfile(prev => ({ ...prev, values: e.target.value }))}
-                                                className="mt-1"
-                                            />
-                                            <p className="mt-2 text-sm text-gray-500">Core values that define your company culture.</p>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        )}
-
-                        {/* Team Members Tab
-                        {activeTab === 'team' && (
-                            <Card className="mb-6">
-                                <CardContent className="p-6">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <h2 className="text-lg font-medium text-gray-900">Team Members</h2>
-                                        <Button onClick={() => setTeamModalOpen(true)}>
-                                            <Plus className="w-4 h-4 mr-1.5" />
-                                            Add Member
-                                        </Button>
-                                    </div>
-
-                                    <div className="overflow-hidden">
-                                        <ul className="divide-y divide-gray-200">
-                                            {teamMembers.map((member) => (
-                                                <li key={member.id} className="py-4 flex items-center justify-between">
-                                                    <div className="flex items-center">
-                                                        <Image
-                                                            className="h-10 w-10 rounded-full"
-                                                            src={member.photo || '/images/default-avatar.png'}
-                                                            alt={member.name}
-                                                            width={40}
-                                                            height={40}
-                                                        />
-                                                        <div className="ml-3">
-                                                            <p className="text-sm font-medium text-gray-900">{member.name}</p>
-                                                            <p className="text-sm text-gray-500">{member.title}</p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex space-x-2">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => handleEditMember(member)}
-                                                        >
-                                                            <Edit className="w-3 h-3 mr-1" />
-                                                            Edit
-                                                        </Button>
-                                                        <Button
-                                                            variant="destructive"
-                                                            size="sm"
-                                                            onClick={() => handleDeleteMember(member.id)}
-                                                        >
-                                                            <Trash2 className="w-3 h-3 mr-1" />
-                                                            Delete
-                                                        </Button>
-                                                    </div>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        )} */}
-
-                        {/* Social Media Tab */}
-                        {activeTab === 'social' && (
-                            <Card className="mb-6">
-                                <CardContent className="p-6">
-                                    <div className="space-y-6">
-                                        {Object.entries(profile.socialMedia).map(([platform, url]) => (
-                                            <div key={platform} className="flex items-center">
-                                                <div className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-md text-white ${platform === 'linkedin' ? 'bg-blue-500' :
-                                                    platform === 'twitter' ? 'bg-blue-400' :
-                                                        platform === 'instagram' ? 'bg-pink-600' :
-                                                            platform === 'facebook' ? 'bg-blue-600' :
-                                                                platform === 'github' ? 'bg-black' :
-                                                                    'bg-red-600'
-                                                    }`}>
-                                                    <i className={`fab fa-${platform}${platform === 'linkedin' ? '-in' : platform === 'facebook' ? '-f' : ''}`}></i>
-                                                </div>
-                                                <div className="ml-4 flex-1">
-                                                    <label htmlFor={platform} className="block text-sm font-medium text-gray-700 capitalize">
-                                                        {platform}
-                                                    </label>
-                                                    <Input
-                                                        id={platform}
-                                                        type="url"
-                                                        value={url}
-                                                        onChange={(e) => setProfile(prev => ({
-                                                            ...prev,
-                                                            socialMedia: { ...prev.socialMedia, [platform]: e.target.value }
-                                                        }))}
-                                                        className="mt-1"
-                                                    />
-                                                </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="sm:col-span-3">
+                                                <label htmlFor="contact-email" className="block text-sm font-bold text-gray-700">
+                                                    Contact Email *
+                                                </label>
+                                                <Input
+                                                    id="contact-email"
+                                                    type="email"
+                                                    value={profile.contactEmail}
+                                                    onChange={(e) => handleFieldChange('contactEmail', e.target.value)}
+                                                    onBlur={() => handleFieldBlur('contactEmail')}
+                                                    className={`mt-1 ${errors.contactEmail ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                                    placeholder="contact@company.com"
+                                                />
+                                                {errors.contactEmail && (
+                                                    <p className="mt-1 text-sm text-red-600">{errors.contactEmail}</p>
+                                                )}
                                             </div>
-                                        ))}
+
+                                            <div className="sm:col-span-3">
+                                                <label htmlFor="contact-phone" className="block text-sm font-bold text-gray-700">
+                                                    Contact Phone *
+                                                </label>
+                                                <Input
+                                                    id="contact-phone"
+                                                    type="tel"
+                                                    value={profile.contactPhone}
+                                                    onChange={(e) => handleFieldChange('contactPhone', e.target.value)}
+                                                    onBlur={() => handleFieldBlur('contactPhone')}
+                                                    className={`mt-1 ${errors.contactPhone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                                    placeholder="+1 (555) 123-4567"
+                                                />
+                                                {errors.contactPhone && (
+                                                    <p className="mt-1 text-sm text-red-600">{errors.contactPhone}</p>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -597,99 +558,6 @@ export default function CompanyProfilePage() {
                     </div>
                 </main>
             </div>
-
-            {/* Team Member Modal */}
-            {/* {teamModalOpen && (
-                <div className="fixed z-10 inset-0 overflow-y-auto">
-                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                        <div className="fixed inset-0 transition-opacity" onClick={() => setTeamModalOpen(false)}>
-                            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                        </div>
-
-                        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                <div className="sm:flex sm:items-start">
-                                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                                        <h3 className="text-lg leading-6 font-medium text-gray-900">
-                                            {editingMember ? 'Edit Team Member' : 'Add Team Member'}
-                                        </h3>
-
-                                        <div className="mt-4 space-y-4">
-                                            <div>
-                                                <label htmlFor="member-name" className="block text-sm font-medium text-gray-700">Name</label>
-                                                <Input
-                                                    id="member-name"
-                                                    value={newMember.name || ''}
-                                                    onChange={(e) => setNewMember(prev => ({ ...prev, name: e.target.value }))}
-                                                    className="mt-1"
-                                                    required
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label htmlFor="member-title" className="block text-sm font-medium text-gray-700">Job Title</label>
-                                                <Input
-                                                    id="member-title"
-                                                    value={newMember.title || ''}
-                                                    onChange={(e) => setNewMember(prev => ({ ...prev, title: e.target.value }))}
-                                                    className="mt-1"
-                                                    required
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label htmlFor="member-bio" className="block text-sm font-medium text-gray-700">Bio</label>
-                                                <Textarea
-                                                    id="member-bio"
-                                                    rows={3}
-                                                    value={newMember.bio || ''}
-                                                    onChange={(e) => setNewMember(prev => ({ ...prev, bio: e.target.value }))}
-                                                    className="mt-1"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700">Photo</label>
-                                                <div className="mt-1 flex items-center">
-                                                    <span className="h-12 w-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
-                                                        <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                                                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 014 4zm-8 0a4 4 0 11-8 0 014 4z" />
-                                                        </svg>
-                                                    </span>
-                                                    <Button variant="outline" className="ml-5">
-                                                        Upload Photo
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                {/* <Button
-                                    onClick={handleSaveMember}
-                                    className="w-full inline-flex justify-center sm:ml-3 sm:w-auto"
-                                >
-                                    {editingMember ? 'Update' : 'Add'} Member
-                                </Button> */}
-            {/* <Button
-                                    variant="outline"
-                                    onClick={() => {
-                                        setTeamModalOpen(false)
-                                        setEditingMember(null)
-                                        setNewMember({ name: '', title: '', bio: '', photo: '' })
-                                    }}
-                                    className="mt-3 w-full inline-flex justify-center sm:mt-0 sm:ml-3 sm:w-auto"
-                                >
-                                    Cancel
-                                </Button>
-                            </div>
-                        </div> */}
-            {/* </div>
-                </div> */}
-            {/* )}  */}
         </div>
     )
 }
-

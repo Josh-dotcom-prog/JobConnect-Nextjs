@@ -247,52 +247,6 @@ export default function ApplicationsPage() {
                         <p className="mt-2 text-gray-600">Manage and review applications across all your job postings</p>
                     </div>
 
-                    {/* Stats Cards */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
-                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("all")}>
-                            <CardContent className="p-4 text-center">
-                                <div className="text-2xl font-bold text-gray-900">{statusCounts.all}</div>
-                                <div className="text-sm text-gray-500">Total</div>
-                            </CardContent>
-                        </Card>
-                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("new")}>
-                            <CardContent className="p-4 text-center">
-                                <div className="text-2xl font-bold text-blue-600">{statusCounts.new}</div>
-                                <div className="text-sm text-gray-500">New</div>
-                            </CardContent>
-                        </Card>
-                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("review")}>
-                            <CardContent className="p-4 text-center">
-                                <div className="text-2xl font-bold text-yellow-600">{statusCounts.review}</div>
-                                <div className="text-sm text-gray-500">Review</div>
-                            </CardContent>
-                        </Card>
-                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("interview")}>
-                            <CardContent className="p-4 text-center">
-                                <div className="text-2xl font-bold text-purple-600">{statusCounts.interview}</div>
-                                <div className="text-sm text-gray-500">Interview</div>
-                            </CardContent>
-                        </Card>
-                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("offer")}>
-                            <CardContent className="p-4 text-center">
-                                <div className="text-2xl font-bold text-green-600">{statusCounts.offer}</div>
-                                <div className="text-sm text-gray-500">Offer</div>
-                            </CardContent>
-                        </Card>
-                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("hired")}>
-                            <CardContent className="p-4 text-center">
-                                <div className="text-2xl font-bold text-green-600">{statusCounts.hired}</div>
-                                <div className="text-sm text-gray-500">Hired</div>
-                            </CardContent>
-                        </Card>
-                        <Card className="cursor-pointer hover:bg-gray-50" onClick={() => setStatusFilter("rejected")}>
-                            <CardContent className="p-4 text-center">
-                                <div className="text-2xl font-bold text-red-600">{statusCounts.rejected}</div>
-                                <div className="text-sm text-gray-500">Rejected</div>
-                            </CardContent>
-                        </Card>
-                    </div>
-
                     {/* Filters */}
                     <Card className="mb-6">
                         <CardContent className="p-6">
@@ -424,28 +378,10 @@ export default function ApplicationsPage() {
                                             </div>
 
                                             <div className="flex items-center space-x-3 ml-4">
-                                                <Select
-                                                    value={application.status}
-                                                    onValueChange={(value) =>
-                                                        handleQuickStatusUpdate(application.id, value as Application["status"])
-                                                    }
-                                                >
-                                                    <SelectTrigger className="w-[120px]">
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="new">New</SelectItem>
-                                                        <SelectItem value="review">Review</SelectItem>
-                                                        <SelectItem value="interview">Interview</SelectItem>
-                                                        <SelectItem value="offer">Offer</SelectItem>
-                                                        <SelectItem value="hired">Hired</SelectItem>
-                                                        <SelectItem value="rejected">Rejected</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
                                                 <Link href={`/employer/applications/${application.id}`}>
                                                     <Button variant="outline" size="sm">
                                                         <Eye className="w-4 h-4 mr-1" />
-                                                        View Details
+                                                        View Profile
                                                     </Button>
                                                 </Link>
                                             </div>

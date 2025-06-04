@@ -39,7 +39,7 @@ const MOCK_JOBS = [
         applicants: 42,
         views: 328,
         skills: ["React", "TypeScript", "JavaScript", "CSS", "HTML"],
-        benefits: ["Health Insurance", "Remote Work", "Flexible Hours", "Professional Development"],
+        // benefits: ["Health Insurance", "Remote Work", "Flexible Hours", "Professional Development"],
         viewsData: [
             { date: "2024-01-01", views: 15 },
             { date: "2024-01-02", views: 23 },
@@ -193,16 +193,16 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
                                 </div>
                             </div>
                             <div className="flex space-x-3">
-                                <Button variant="outline">
+                                {/* <Button variant="outline">
                                     <Share2 className="w-4 h-4 mr-2" />
                                     Share
-                                </Button>
-                                <Link href={`/employer/jobs/${job.id}/edit`}>
+                                </Button> */}
+                                {/* <Link href={`/employer/jobs/${job.id}/edit`}>
                                     <Button>
                                         <Edit className="w-4 h-4 mr-2" />
                                         Edit Job
                                     </Button>
-                                </Link>
+                                </Link> */}
                             </div>
                         </div>
                     </CardHeader>
@@ -212,8 +212,8 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
                     <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="overview">Overview</TabsTrigger>
                         <TabsTrigger value="applicants">Applicants ({job.applicants})</TabsTrigger>
-                        <TabsTrigger value="analytics">Analytics</TabsTrigger>
-                        <TabsTrigger value="settings">Settings</TabsTrigger>
+                        {/* <TabsTrigger value="analytics">Analytics</TabsTrigger> */}
+                        {/* <TabsTrigger value="settings">Settings</TabsTrigger> */}
                     </TabsList>
 
                     <TabsContent value="overview" className="space-y-6">
@@ -307,34 +307,11 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
                                     </CardContent>
                                 </Card>
 
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Benefits</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <ul className="space-y-2">
-                                            {job.benefits.map((benefit, index) => (
-                                                <li key={index} className="flex items-center">
-                                                    <span className="w-2 h-2 bg-blue-500 rounded-full mr-3" />
-                                                    <span className="text-sm text-gray-700">{benefit}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </CardContent>
-                                </Card>
                             </div>
                         </div>
                     </TabsContent>
 
                     <TabsContent value="applicants" className="space-y-6">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-semibold">Applicants</h2>
-                            <Button variant="outline">
-                                <Download className="w-4 h-4 mr-2" />
-                                Export CSV
-                            </Button>
-                        </div>
-
                         <Card>
                             <CardContent className="p-0">
                                 <div className="divide-y divide-gray-200">

@@ -37,8 +37,7 @@ interface JobPosting {
     department: string
     type: string
     location: string
-    salaryMin: string
-    salaryMax: string
+    baseSalary: string
     description: string
     requirements: string
     status: 'active' | 'draft' | 'closed' | 'expired'
@@ -62,8 +61,7 @@ const JobPostingsPage = () => {
             department: 'Engineering',
             type: 'Full-time',
             location: 'Remote',
-            salaryMin: '$100k',
-            salaryMax: '$130k',
+            baseSalary: '$100k',
             description: 'We are seeking a talented Senior Frontend Developer to join our growing engineering team. You will be responsible for developing and maintaining high-quality web applications using modern technologies.',
             requirements: '5+ years of experience with React, TypeScript, and modern frontend technologies. Strong understanding of web performance optimization and responsive design.',
             status: 'active',
@@ -78,8 +76,7 @@ const JobPostingsPage = () => {
             department: 'Design',
             type: 'Full-time',
             location: 'On-site',
-            salaryMin: '$80k',
-            salaryMax: '$100k',
+            baseSalary: '$80k',
             description: 'Join our design team to create beautiful and intuitive user experiences. You will work closely with product managers and developers to bring designs to life.',
             requirements: '3+ years of experience in UI/UX design, proficiency in Figma, Adobe Creative Suite, and strong portfolio demonstrating design thinking.',
             status: 'active',
@@ -94,11 +91,10 @@ const JobPostingsPage = () => {
             department: 'Analytics',
             type: 'Full-time',
             location: 'Hybrid',
-            salaryMin: '$120k',
-            salaryMax: '$150k',
+            baseSalary: '$120k',
             description: 'We are looking for a Data Scientist to analyze large datasets and build predictive models that drive business decisions.',
             requirements: 'PhD or Masters in Data Science, Statistics, or related field. Experience with Python, R, SQL, and machine learning frameworks.',
-            status: 'draft',
+            status: 'active',
             postedDate: '2023-01-05',
             applicants: 0,
             views: 0,
@@ -110,11 +106,10 @@ const JobPostingsPage = () => {
             department: 'Engineering',
             type: 'Full-time',
             location: 'Remote',
-            salaryMin: '$110k',
-            salaryMax: '$140k',
+            baseSalary: '$110k',
             description: 'Join our DevOps team to build and maintain scalable infrastructure. You will work with cloud technologies and automation tools.',
             requirements: '4+ years of experience with AWS/GCP, Docker, Kubernetes, and CI/CD pipelines. Strong scripting skills in Python or Bash.',
-            status: 'closed',
+            status: 'active',
             postedDate: '2022-12-01',
             applicants: 35,
             views: 278,
@@ -127,8 +122,7 @@ const JobPostingsPage = () => {
         department: '',
         type: '',
         location: '',
-        salaryMin: '',
-        salaryMax: '',
+        baseSalary: '',
         description: '',
         requirements: ''
     })
@@ -179,10 +173,10 @@ const JobPostingsPage = () => {
                 // Navigate to the job view page
                 router.push(`/employer/jobs/${jobId}`)
                 break
-            case 'edit':
-                // Navigate to the job edit page
-                router.push(`/employer/jobs/${jobId}/edit`)
-                break
+            // case 'edit':
+            //     // Navigate to the job edit page
+            //     router.push(`/employer/jobs/${jobId}/edit`)
+            //     break
             case 'close':
                 if (confirm(`Are you sure you want to close the job posting for: ${job.title}?`)) {
                     setJobPostings(prev => prev.map(j =>
@@ -203,27 +197,27 @@ const JobPostingsPage = () => {
                     description: `${job.title} has been published`,
                 })
                 break
-            case 'duplicate':
-                toast({
-                    title: "Job Duplicated",
-                    description: `A copy of ${job.title} has been created as a draft`,
-                })
-                break
-            case 'renew':
-                setJobPostings(prev => prev.map(j =>
-                    j.id === jobId ? { ...j, status: 'active' as const } : j
-                ))
-                toast({
-                    title: "Job Renewed",
-                    description: `${job.title} has been renewed and is now active`,
-                })
-                break
+            // case 'duplicate':
+            //     toast({
+            //         title: "Job Duplicated",
+            //         description: `A copy of ${job.title} has been created as a draft`,
+            //     })
+            //     break
+            // case 'renew':
+            //     setJobPostings(prev => prev.map(j =>
+            //         j.id === jobId ? { ...j, status: 'active' as const } : j
+            //     ))
+            //     toast({
+            //         title: "Job Renewed",
+            //         description: `${job.title} has been renewed and is now active`,
+            //     })
+            //     break
         }
     }
 
     const handleSaveJob = (isDraft: boolean) => {
         // Validate required fields
-        const requiredFields = ['title', 'department', 'type', 'location', 'salaryMin', 'salaryMax', 'description', 'requirements']
+        const requiredFields = ['title', 'department', 'type', 'location', 'baseSalary', 'salaryMax', 'description', 'requirements']
         const isValid = requiredFields.every(field => newJob[field as keyof typeof newJob])
 
         if (!isValid) {
@@ -252,8 +246,7 @@ const JobPostingsPage = () => {
             department: '',
             type: '',
             location: '',
-            salaryMin: '',
-            salaryMax: '',
+            baseSalary: '',
             description: '',
             requirements: ''
         })
@@ -276,13 +269,13 @@ const JobPostingsPage = () => {
                         >
                             View
                         </Button>
-                        <Button
+                        {/* <Button
                             variant="outline"
                             size="sm"
                             onClick={() => handleJobAction(job.id, 'edit')}
                         >
                             Edit
-                        </Button>
+                        </Button> */}
                         <Button
                             variant="destructive"
                             size="sm"
@@ -295,18 +288,26 @@ const JobPostingsPage = () => {
             case 'draft':
                 return (
                     <div className="flex space-x-2">
-                        <Button
+                        {/* <Button
                             variant="outline"
                             size="sm"
                             onClick={() => handleJobAction(job.id, 'edit')}
                         >
                             Edit
+                        </Button> */}
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleJobAction(job.id, 'view')}
+                        >
+                            View
                         </Button>
                         <Button
+                            variant="destructive"
                             size="sm"
-                            onClick={() => handleJobAction(job.id, 'publish')}
+                            onClick={() => handleJobAction(job.id, 'close')}
                         >
-                            Publish
+                            Close
                         </Button>
                     </div>
                 )
@@ -321,12 +322,19 @@ const JobPostingsPage = () => {
                             View
                         </Button>
                         <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleJobAction(job.id, 'close')}
+                        >
+                            Close
+                        </Button>
+                        {/* <Button
                             variant="outline"
                             size="sm"
                             onClick={() => handleJobAction(job.id, 'duplicate')}
                         >
                             Duplicate
-                        </Button>
+                        </Button> */}
                     </div>
                 )
             case 'expired':
@@ -428,22 +436,12 @@ const JobPostingsPage = () => {
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <Label htmlFor="salaryMin">Min Salary</Label>
+                                                <Label htmlFor="baseSalary">Base Salary</Label>
                                                 <Input
-                                                    id="salaryMin"
-                                                    value={newJob.salaryMin}
-                                                    onChange={(e) => setNewJob(prev => ({ ...prev, salaryMin: e.target.value }))}
+                                                    id="baseSalary"
+                                                    value={newJob.baseSalary}
+                                                    onChange={(e) => setNewJob(prev => ({ ...prev, baseSalary: e.target.value }))}
                                                     placeholder="e.g., $80k"
-                                                    required
-                                                />
-                                            </div>
-                                            <div>
-                                                <Label htmlFor="salaryMax">Max Salary</Label>
-                                                <Input
-                                                    id="salaryMax"
-                                                    value={newJob.salaryMax}
-                                                    onChange={(e) => setNewJob(prev => ({ ...prev, salaryMax: e.target.value }))}
-                                                    placeholder="e.g., $120k"
                                                     required
                                                 />
                                             </div>
@@ -557,7 +555,7 @@ const JobPostingsPage = () => {
                                                     {job.title}
                                                 </div>
                                                 <div className="text-sm text-gray-500">
-                                                    {job.type} • {job.location} • {job.salaryMin} - {job.salaryMax}
+                                                    {job.type} • {job.location} • {job.baseSalary}
                                                 </div>
                                             </div>
                                         </div>

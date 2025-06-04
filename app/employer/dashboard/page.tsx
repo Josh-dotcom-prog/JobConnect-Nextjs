@@ -155,11 +155,11 @@ export default function EmployerDashboard() {
                             42 applicants
                           </div>
                         </div>
-                        <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                          <Link href="/employer/job-postings/1" className="text-blue-600 hover:text-blue-500">
+                        {/* <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                          <Link href="/employer/jobPostings/1" className="text-blue-600 hover:text-blue-500">
                             View Details
                           </Link>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </li>
@@ -194,11 +194,11 @@ export default function EmployerDashboard() {
                             28 applicants
                           </div>
                         </div>
-                        <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                        {/* <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                           <Link href="/employer/job-postings/2" className="text-blue-600 hover:text-blue-500">
                             View Details
                           </Link>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </li>
@@ -233,11 +233,11 @@ export default function EmployerDashboard() {
                             Not published
                           </div>
                         </div>
-                        <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                        {/* <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                           <Link href="/employer/job-postings/3" className="text-blue-600 hover:text-blue-500">
                             View Details
                           </Link>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </li>
