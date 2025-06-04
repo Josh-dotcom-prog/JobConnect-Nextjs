@@ -20,7 +20,6 @@ interface LoginFormData {
 
 interface SignupFormData {
     email: string
-    role: string
     password: string
     confirmPassword: string
 }
@@ -40,7 +39,6 @@ export default function AuthPage() {
 
     const [signupData, setSignupData] = useState<SignupFormData>({
         email: "",
-        role: "",
         password: "",
         confirmPassword: "",
     })
@@ -103,7 +101,7 @@ export default function AuthPage() {
         setIsLoading(true)
 
         // Validation
-        if (!signupData.email || !signupData.role || !signupData.password || !signupData.confirmPassword) {
+        if (!signupData.email || !signupData.password || !signupData.confirmPassword) {
             setError("Please fill in all fields")
             setIsLoading(false)
             return
@@ -136,7 +134,6 @@ export default function AuthPage() {
             // Reset form
             setSignupData({
                 email: "",
-                role: "",
                 password: "",
                 confirmPassword: "",
             })
@@ -158,7 +155,7 @@ export default function AuthPage() {
         setError("")
         setSuccess("")
         setLoginData({ emailOrUsername: "", password: "" })
-        setSignupData({ email: "", role: "", password: "", confirmPassword: "" })
+        setSignupData({ email: "", password: "", confirmPassword: "" })
     }
 
     return (
@@ -284,25 +281,6 @@ export default function AuthPage() {
                                         />
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <Mail className="h-4 w-4 text-gray-400" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <Label htmlFor="role">Role</Label>
-                                    <div className="mt-1 relative">
-                                        <Select onValueChange={(value) => handleSignupChange("role", value)} value={signupData.role}>
-                                            <SelectTrigger className="pl-10">
-                                                <SelectValue placeholder="Select your role" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="job-seeker">Job Seeker</SelectItem>
-                                                <SelectItem value="employer">Employer</SelectItem>
-                                                <SelectItem value="admin">Admin</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <UserCheck className="h-4 w-4 text-gray-400" />
                                         </div>
                                     </div>
                                 </div>
