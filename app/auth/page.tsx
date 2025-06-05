@@ -253,14 +253,6 @@ export default function AuthPage() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center justify-between">
-                                    <div className="text-sm">
-                                        <Link href="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
-                                            Forgot your password?
-                                        </Link>
-                                    </div>
-                                </div>
-
                                 <Button type="submit" className="w-full bg-blue-700 text-white hover:bg-yellow-400" disabled={isLoading}>
                                     {isLoading ? "Signing in..." : "Sign in"}
                                 </Button>
