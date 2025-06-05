@@ -252,10 +252,18 @@ export default function AuthPage() {
                                         </button>
                                     </div>
                                 </div>
+                                <Link href="/job-seeker/profile">
+                                    <Button type="submit" className="w-full bg-yellow-400 text-white hover:bg-yellow-200 hover:text-black mb-2 mt-2" disabled={isLoading}>
+                                        {isLoading ? "Signing in..." : "Sign in as Job Seeker"}
+                                    </Button>
+                                </Link>
 
-                                <Button type="submit" className="w-full bg-blue-700 text-white hover:bg-yellow-400" disabled={isLoading}>
-                                    {isLoading ? "Signing in..." : "Sign in"}
-                                </Button>
+                                <Link href="/employer/profile">
+                                    <Button type="submit" className="w-full bg-blue-700 text-white hover:bg-blue-400" disabled={isLoading}>
+                                        {isLoading ? "Signing in..." : "Sign in Employer"}
+                                    </Button>
+                                </Link>
+
                             </form>
                         ) : (
                             <form onSubmit={handleSignup} className="space-y-6">

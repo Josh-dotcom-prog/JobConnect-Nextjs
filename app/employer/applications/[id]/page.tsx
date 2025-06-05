@@ -63,7 +63,7 @@ interface Application {
 const MOCK_APPLICATIONS: Application[] = [
     {
         id: "1",
-        name: "Michael Johnson",
+        name: "William Obwana",
         position: "Senior Frontend Developer",
         jobId: "1",
         status: "new",
@@ -73,7 +73,7 @@ const MOCK_APPLICATIONS: Application[] = [
         education: "BS Computer Science, Stanford University",
         experience: "5 years experience",
         appliedDate: "Jan 20, 2024",
-        email: "michael.johnson@example.com",
+        email: "williamobwana@gmail.com",
         phone: "(555) 123-4567",
         location: "San Francisco, CA",
         skills: ["JavaScript", "React", "TypeScript", "HTML/CSS", "Redux", "Node.js"],
@@ -389,34 +389,8 @@ export default function ApplicationDetailPage() {
                                                     <FileText className="w-5 h-5 text-gray-400" />
                                                     <span>Resume.pdf</span>
                                                 </div>
-                                                <Button variant="outline" size="sm">
-                                                    <Download className="w-4 h-4 mr-1" />
-                                                    Download
-                                                </Button>
-                                            </div>
-                                        )}
-                                        {application.portfolioUrl && (
-                                            <div className="flex items-center justify-between p-3 border rounded-lg">
-                                                <div className="flex items-center space-x-3">
-                                                    <User className="w-5 h-5 text-gray-400" />
-                                                    <span>Portfolio</span>
-                                                </div>
                                                 <Button variant="outline" size="sm" asChild>
-                                                    <a href={application.portfolioUrl} target="_blank" rel="noopener noreferrer">
-                                                        <Eye className="w-4 h-4 mr-1" />
-                                                        View
-                                                    </a>
-                                                </Button>
-                                            </div>
-                                        )}
-                                        {application.linkedinUrl && (
-                                            <div className="flex items-center justify-between p-3 border rounded-lg">
-                                                <div className="flex items-center space-x-3">
-                                                    <User className="w-5 h-5 text-gray-400" />
-                                                    <span>LinkedIn Profile</span>
-                                                </div>
-                                                <Button variant="outline" size="sm" asChild>
-                                                    <a href={application.linkedinUrl} target="_blank" rel="noopener noreferrer">
+                                                    <a href="/assets/OBWANA CV-1.pdf" target="_blank" rel="noopener noreferrer">
                                                         <Eye className="w-4 h-4 mr-1" />
                                                         View
                                                     </a>
