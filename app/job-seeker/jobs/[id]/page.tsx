@@ -147,154 +147,104 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
                     Back to job listings
                 </Link>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main content */}
-                    <div className="lg:col-span-2 space-y-6">
-                        {/* Job header */}
-                        <Card>
-                            <CardHeader>
-                                <div className="flex items-start justify-between">
-                                    <div className="flex items-center space-x-4">
-                                        <img
-                                            src={job.logoUrl || "/placeholder.svg"}
-                                            alt={`${job.company} logo`}
-                                            className="w-16 h-16 rounded-lg"
-                                        />
-                                        <div>
-                                            <CardTitle className="text-2xl font-bold">{job.title}</CardTitle>
-                                            <p className="text-lg text-gray-600 mt-1">{job.company}</p>
-                                            <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
-                                                <div className="flex items-center">
-                                                    <MapPin className="w-4 h-4 mr-1" />
-                                                    {job.location}
-                                                </div>
-                                                <div className="flex items-center">
-                                                    <Clock className="w-4 h-4 mr-1" />
-                                                    {job.jobType}
-                                                </div>
-                                                <div className="flex items-center">
-                                                    <Calendar className="w-4 h-4 mr-1" />
-                                                    Posted {job.postedDate}
-                                                </div>
+                {/* Main content */}
+                <div className="lg:col-span-2 space-y-6">
+                    {/* Job header */}
+                    <Card>
+                        <CardHeader>
+                            <div className="flex items-start justify-between">
+                                <div className="flex items-center space-x-4">
+                                    <img
+                                        src={job.logoUrl || "/placeholder.svg"}
+                                        alt={`${job.company} logo`}
+                                        className="w-16 h-16 rounded-lg"
+                                    />
+                                    <div>
+                                        <CardTitle className="text-2xl font-bold">{job.title}</CardTitle>
+                                        <p className="text-lg text-gray-600 mt-1">{job.company}</p>
+                                        <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                                            <div className="flex items-center">
+                                                <MapPin className="w-4 h-4 mr-1" />
+                                                {job.location}
+                                            </div>
+                                            <div className="flex items-center">
+                                                <Clock className="w-4 h-4 mr-1" />
+                                                {job.jobType}
+                                            </div>
+                                            <div className="flex items-center">
+                                                <Calendar className="w-4 h-4 mr-1" />
+                                                Posted {job.postedDate}
                                             </div>
                                         </div>
                                     </div>
-                                    {job.isNew && (
-                                        <Badge variant="secondary" className="bg-green-100 text-green-800">
-                                            New
-                                        </Badge>
-                                    )}
                                 </div>
-                            </CardHeader>
-                        </Card>
+                                {job.isNew && (
+                                    <Badge variant="secondary" className="bg-green-100 text-green-800">
+                                        New
+                                    </Badge>
+                                )}
+                            </div>
+                        </CardHeader>
+                    </Card>
 
-                        {/* Job description */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Job Description</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="prose max-w-none">
-                                    <p className="text-gray-700 whitespace-pre-line">{job.fullDescription}</p>
-                                </div>
-                            </CardContent>
-                        </Card>
+                    {/* Job description */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Job Description</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="prose max-w-none">
+                                <p className="text-gray-700 whitespace-pre-line">{job.fullDescription}</p>
+                            </div>
+                        </CardContent>
+                    </Card>
 
-                        {/* Requirements */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Requirements</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <ul className="space-y-2">
-                                    {job.requirements.map((requirement, index) => (
-                                        <li key={index} className="flex items-start">
-                                            <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                                            <span className="text-gray-700">{requirement}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </CardContent>
-                        </Card>
+                    {/* Requirements */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Requirements</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ul className="space-y-2">
+                                {job.requirements.map((requirement, index) => (
+                                    <li key={index} className="flex items-start">
+                                        <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0" />
+                                        <span className="text-gray-700">{requirement}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </CardContent>
+                    </Card>
 
-                        {/* Skills */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Required Skills</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex flex-wrap gap-2">
-                                    {job.skills.map((skill, index) => (
-                                        <Badge key={index} variant="outline">
-                                            {skill}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
+                    {/* Skills */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Required Skills</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex flex-wrap gap-2">
+                                {job.skills.map((skill, index) => (
+                                    <Badge key={index} variant="outline">
+                                        {skill}
+                                    </Badge>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
 
-                    {/* Sidebar */}
-                    <div className="space-y-6">
-                        {/* Apply button */}
-                        <Card>
-                            <CardContent className="pt-6">
-                                <Link href={`/job-seeker/jobs/${id}/apply`}>
-                                    <Button className="w-full mt-3 bg-yellow-500 text-white hover:bg-yellow-200 hover:text-black" size="lg">
-                                        Apply Now
-                                    </Button>
-                                </Link>
-                            </CardContent>
-                        </Card>
-
-                        {/* Job details */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Job Details</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-500">Salary</span>
-                                    <span className="font-medium">{job.salary}</span>
-                                </div>
-                                <Separator />
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-500">Job Type</span>
-                                    <span className="font-medium">{job.jobType}</span>
-                                </div>
-                                <Separator />
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-500">Location</span>
-                                    <span className="font-medium">{job.location}</span>
-                                </div>
-                                <Separator />
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-500">Industry</span>
-                                    <span className="font-medium">{job.industry}</span>
-                                </div>
-                                <Separator />
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-500">Company Size</span>
-                                    <span className="font-medium">{job.companySize}</span>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-
-                        {/* Company info */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>About {job.company}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-gray-700">{job.companyDescription}</p>
-                                <div className="mt-4 flex items-center text-sm text-gray-500">
-                                    <Users className="w-4 h-4 mr-1" />
-                                    {job.companySize}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
+                {/* Sidebar */}
+                <div className="space-y-6">
+                    {/* Apply button */}
+                    <Card>
+                        <CardContent className="pt-6">
+                            <Link href={`/job-seeker/jobs/${id}/apply`}>
+                                <Button className="w-full mt-3 bg-yellow-500 text-white hover:bg-yellow-200 hover:text-black" size="lg">
+                                    Apply Now
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </div>
