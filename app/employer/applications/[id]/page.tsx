@@ -333,9 +333,6 @@ export default function ApplicationDetailPage() {
                 <Tabs defaultValue="overview" className="space-y-6">
                     <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="overview">Overview</TabsTrigger>
-                        <TabsTrigger value="experience">Experience</TabsTrigger>
-                        <TabsTrigger value="documents">Documents</TabsTrigger>
-                        {/* <TabsTrigger value="notes">Notes & Rating</TabsTrigger> */}
                     </TabsList>
 
                     <TabsContent value="overview" className="space-y-6">
@@ -363,6 +360,69 @@ export default function ApplicationDetailPage() {
                                                 </Badge>
                                             ))}
                                         </div>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Professional Experience</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="flex items-start space-x-3">
+                                            <Briefcase className="w-5 h-5 text-gray-400 mt-1" />
+                                            <div>
+                                                <p className="font-medium">{application.experience}</p>
+                                                <p className="text-gray-500">Applied for {application.position}</p>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Documents & Links</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-3">
+                                        {application.resumeUrl && (
+                                            <div className="flex items-center justify-between p-3 border rounded-lg">
+                                                <div className="flex items-center space-x-3">
+                                                    <FileText className="w-5 h-5 text-gray-400" />
+                                                    <span>Resume.pdf</span>
+                                                </div>
+                                                <Button variant="outline" size="sm">
+                                                    <Download className="w-4 h-4 mr-1" />
+                                                    Download
+                                                </Button>
+                                            </div>
+                                        )}
+                                        {application.portfolioUrl && (
+                                            <div className="flex items-center justify-between p-3 border rounded-lg">
+                                                <div className="flex items-center space-x-3">
+                                                    <User className="w-5 h-5 text-gray-400" />
+                                                    <span>Portfolio</span>
+                                                </div>
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <a href={application.portfolioUrl} target="_blank" rel="noopener noreferrer">
+                                                        <Eye className="w-4 h-4 mr-1" />
+                                                        View
+                                                    </a>
+                                                </Button>
+                                            </div>
+                                        )}
+                                        {application.linkedinUrl && (
+                                            <div className="flex items-center justify-between p-3 border rounded-lg">
+                                                <div className="flex items-center space-x-3">
+                                                    <User className="w-5 h-5 text-gray-400" />
+                                                    <span>LinkedIn Profile</span>
+                                                </div>
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <a href={application.linkedinUrl} target="_blank" rel="noopener noreferrer">
+                                                        <Eye className="w-4 h-4 mr-1" />
+                                                        View
+                                                    </a>
+                                                </Button>
+                                            </div>
+                                        )}
                                     </CardContent>
                                 </Card>
                             </div>
@@ -406,137 +466,12 @@ export default function ApplicationDetailPage() {
                                         </div>
                                     </CardContent>
                                 </Card>
+
                             </div>
                         </div>
                     </TabsContent>
 
-                    <TabsContent value="experience" className="space-y-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Professional Experience</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex items-start space-x-3">
-                                    <Briefcase className="w-5 h-5 text-gray-400 mt-1" />
-                                    <div>
-                                        <p className="font-medium">{application.experience}</p>
-                                        <p className="text-gray-500">Applied for {application.position}</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-
-                    <TabsContent value="documents" className="space-y-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Documents & Links</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                {application.resumeUrl && (
-                                    <div className="flex items-center justify-between p-3 border rounded-lg">
-                                        <div className="flex items-center space-x-3">
-                                            <FileText className="w-5 h-5 text-gray-400" />
-                                            <span>Resume.pdf</span>
-                                        </div>
-                                        <Button variant="outline" size="sm">
-                                            <Download className="w-4 h-4 mr-1" />
-                                            Download
-                                        </Button>
-                                    </div>
-                                )}
-                                {application.portfolioUrl && (
-                                    <div className="flex items-center justify-between p-3 border rounded-lg">
-                                        <div className="flex items-center space-x-3">
-                                            <User className="w-5 h-5 text-gray-400" />
-                                            <span>Portfolio</span>
-                                        </div>
-                                        <Button variant="outline" size="sm" asChild>
-                                            <a href={application.portfolioUrl} target="_blank" rel="noopener noreferrer">
-                                                <Eye className="w-4 h-4 mr-1" />
-                                                View
-                                            </a>
-                                        </Button>
-                                    </div>
-                                )}
-                                {application.linkedinUrl && (
-                                    <div className="flex items-center justify-between p-3 border rounded-lg">
-                                        <div className="flex items-center space-x-3">
-                                            <User className="w-5 h-5 text-gray-400" />
-                                            <span>LinkedIn Profile</span>
-                                        </div>
-                                        <Button variant="outline" size="sm" asChild>
-                                            <a href={application.linkedinUrl} target="_blank" rel="noopener noreferrer">
-                                                <Eye className="w-4 h-4 mr-1" />
-                                                View
-                                            </a>
-                                        </Button>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-
-                    <TabsContent value="notes" className="space-y-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Internal Notes & Rating</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-4">
-                                    {application.rating && (
-                                        <div>
-                                            <Label>Rating</Label>
-                                            <div className="mt-2">{renderStars(application.rating)}</div>
-                                        </div>
-                                    )}
-                                    {/* <div>
-                                        <Label>Notes</Label>
-                                        <div className="mt-2 p-4 bg-gray-50 rounded-lg">
-                                            <p className="text-gray-700">{application.notes || "No notes added yet."}</p>
-                                        </div>
-                                    </div>
-                                    <Button onClick={openNotesModal}>
-                                        <MessageSquare className="w-4 h-4 mr-2" />
-                                        Edit Notes & Rating
-                                    </Button> */}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
                 </Tabs>
-
-                {/* Notes Modal */}
-                {/* <Dialog open={showNotesModal} onOpenChange={setShowNotesModal}>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Add Notes & Rating</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                            <div>
-                                <Label htmlFor="rating">Rating</Label>
-                                <div className="mt-2">{renderStars(rating, true, setRating)}</div>
-                            </div>
-                            <div>
-                                <Label htmlFor="notes">Notes</Label>
-                                <Textarea
-                                    id="notes"
-                                    value={notes}
-                                    onChange={(e) => setNotes(e.target.value)}
-                                    placeholder="Add your notes about this candidate..."
-                                    rows={4}
-                                    className="mt-1"
-                                />
-                            </div>
-                            <div className="flex justify-end space-x-3">
-                                <Button variant="outline" onClick={() => setShowNotesModal(false)}>
-                                    Cancel
-                                </Button>
-                                <Button onClick={handleSaveNotes}>Save</Button>
-                            </div>
-                        </div>
-                    </DialogContent>
-                </Dialog> */}
             </div>
         </div>
     )

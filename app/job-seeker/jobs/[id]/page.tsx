@@ -39,37 +39,7 @@ Requirements:
 • Proficiency in CSS frameworks (Tailwind CSS, styled-components)
 • Experience with testing frameworks (Jest, React Testing Library)
 • Strong understanding of web performance optimization
-• Excellent communication and collaboration skills
-
-Benefits:
-• Competitive salary and equity package
-• Comprehensive health, dental, and vision insurance
-• Flexible work arrangements (hybrid/remote options)
-• Professional development budget
-• Unlimited PTO policy
-• Modern office with free meals and snacks`,
-        companySize: "500-1000 employees",
-        industry: "Technology",
-        companyDescription:
-            "TechCorp Inc. is a leading technology company that builds innovative software solutions for businesses worldwide. We're committed to creating products that make a positive impact on people's lives.",
-        benefits: [
-            "Health Insurance",
-            "Dental Insurance",
-            "Vision Insurance",
-            "401(k) with matching",
-            "Flexible PTO",
-            "Remote work options",
-            "Professional development budget",
-            "Free meals",
-        ],
-        requirements: [
-            "5+ years frontend development experience",
-            "Expert React and TypeScript skills",
-            "Experience with state management",
-            "CSS framework proficiency",
-            "Testing framework experience",
-            "Web performance optimization knowledge",
-        ],
+• Excellent communication and collaboration skills`,
     },
     {
         id: "2",
@@ -105,14 +75,6 @@ Requirements:
         industry: "Analytics",
         companyDescription:
             "DataViz Analytics helps companies unlock the power of their data through advanced analytics and machine learning solutions.",
-        benefits: [
-            "Competitive salary",
-            "Remote work",
-            "Health benefits",
-            "Learning stipend",
-            "Conference attendance",
-            "Flexible hours",
-        ],
         requirements: [
             "Master's degree preferred",
             "3+ years data science experience",
@@ -123,6 +85,7 @@ Requirements:
         ],
     },
 ]
+
 
 interface JobDetailsPageProps {
     params: Promise<{ id: string }>
@@ -196,23 +159,6 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
                             <div className="prose max-w-none">
                                 <p className="text-gray-700 whitespace-pre-line">{job.fullDescription}</p>
                             </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Requirements */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Requirements</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <ul className="space-y-2">
-                                {job.requirements.map((requirement, index) => (
-                                    <li key={index} className="flex items-start">
-                                        <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                                        <span className="text-gray-700">{requirement}</span>
-                                    </li>
-                                ))}
-                            </ul>
                         </CardContent>
                     </Card>
 
