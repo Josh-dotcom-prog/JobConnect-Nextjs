@@ -259,6 +259,7 @@ export default function JobSeekerProfilePage() {
                 title: "Profile Saved!",
                 description: "Your profile has been updated successfully.",
             })
+
         } catch (error) {
             toast({
                 title: "Error",
@@ -601,6 +602,80 @@ export default function JobSeekerProfilePage() {
                                             {errors.education && <p className="mt-1 text-sm text-red-600">{errors.education}</p>}
                                         </div>
                                     </div>
+
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="resume-upload" className="block text-sm font-bold text-gray-700">
+                                            Resume *
+                                        </label>
+                                        <div className="mt-1">
+                                            <div className="flex items-center space-x-4">
+                                                <label htmlFor="resume-upload">
+                                                    <Button type="button" variant="outline" size="sm" className="cursor-pointer" asChild>
+                                                        <span>
+                                                            <Upload className="w-4 h-4 mr-2" />
+                                                            {profile.resume ? "Change Resume" : "Upload Resume"}
+                                                        </span>
+                                                    </Button>
+                                                </label>
+                                                {profile.resume && (
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => {
+                                                            setProfile(prev => ({ ...prev, resume: undefined }))
+                                                            setErrors(prev => ({ ...prev, resume: undefined }))
+                                                            const fileInput = document.getElementById("resume-upload") as HTMLInputElement
+                                                            if (fileInput) fileInput.value = ""
+                                                        }}
+                                                        className="text-red-600 hover:text-red-700"
+                                                    >
+                                                        <X className="w-4 h-4 mr-2" />
+                                                        Remove
+                                                    </Button>
+                                                )}
+                                            </div>
+                                            <input
+                                                id="resume-upload"
+                                                type="file"
+                                                accept=".pdf,.doc,.docx"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0]
+                                                    if (!file) return
+
+                                                    // Validate file type
+                                                    const allowedTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
+                                                    if (!allowedTypes.includes(file.type)) {
+                                                        setErrors(prev => ({ ...prev, resume: "Please upload a valid resume file (PDF, DOC, or DOCX)" }))
+                                                        return
+                                                    }
+
+                                                    // Validate file size (max 10MB)
+                                                    const maxSize = 10 * 1024 * 1024 // 10MB in bytes
+                                                    if (file.size > maxSize) {
+                                                        setErrors(prev => ({ ...prev, resume: "Resume file size must be less than 10MB" }))
+                                                        return
+                                                    }
+
+                                                    // Clear errors and set file
+                                                    setErrors(prev => ({ ...prev, resume: undefined }))
+                                                    setProfile(prev => ({ ...prev, resume: file.name }))
+                                                }}
+                                                className="hidden"
+                                            />
+                                            {profile.resume && (
+                                                <div className="mt-2 flex items-center text-sm text-green-600">
+                                                    <Check className="w-4 h-4 mr-1" />
+                                                    {profile.resume}
+                                                </div>
+                                            )}
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                Upload your resume in PDF, DOC, or DOCX format (max 10MB)
+                                            </p>
+                                            {errors.resume && <p className="mt-1 text-sm text-red-600">{errors.resume}</p>}
+                                        </div>
+                                    </div>
+
                                 </CardContent>
                             </Card>
                         )}
