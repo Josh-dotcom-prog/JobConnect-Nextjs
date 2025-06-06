@@ -306,7 +306,7 @@ export default function ApplicationsPage() {
                                                 <Link href={`/employer/applications/${application.id}`}>
                                                     <Button variant="outline" size="sm">
                                                         <Eye className="w-4 h-4 mr-1" />
-                                                        View Profile
+                                                        View Application
                                                     </Button>
                                                 </Link>
                                             </div>
