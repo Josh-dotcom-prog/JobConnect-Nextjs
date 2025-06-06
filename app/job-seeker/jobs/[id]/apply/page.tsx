@@ -127,142 +127,79 @@ export default function JobApplicationPage() {
                     Back to job details
                 </Link>
 
-                {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-8"> */}
-                {/* Application form */}
                 <div className="lg:col-span-2">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-2xl">Apply for this position</CardTitle>
-                            <p className="text-gray-600">
-                                Fill out the form below to submit your application. All fields marked with * are required.
-                            </p>
-                        </CardHeader>
-                        <CardContent>
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                {/* Personal Information */}
-                                <div>
-                                    <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <Label htmlFor="firstName">First Name *</Label>
-                                            <Input
-                                                id="firstName"
-                                                value={formData.firstName}
-                                                onChange={(e) => handleInputChange("firstName", e.target.value)}
-                                                required
-                                            />
-                                        </div>
-                                        <div>
-                                            <Label htmlFor="lastName">Last Name *</Label>
-                                            <Input
-                                                id="lastName"
-                                                value={formData.lastName}
-                                                onChange={(e) => handleInputChange("lastName", e.target.value)}
-                                                required
-                                            />
-                                        </div>
-                                        <div>
-                                            <Label htmlFor="email">Email Address *</Label>
-                                            <Input
-                                                id="email"
-                                                type="email"
-                                                value={formData.email}
-                                                onChange={(e) => handleInputChange("email", e.target.value)}
-                                                required
-                                            />
-                                        </div>
-                                        <div>
-                                            <Label htmlFor="phone">Phone Number *</Label>
-                                            <Input
-                                                id="phone"
-                                                type="tel"
-                                                value={formData.phone}
-                                                onChange={(e) => handleInputChange("phone", e.target.value)}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="md:col-span-2">
-                                            <Label htmlFor="location">Current Location *</Label>
-                                            <Input
-                                                id="location"
-                                                value={formData.location}
-                                                onChange={(e) => handleInputChange("location", e.target.value)}
-                                                placeholder="City, State/Country"
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Resume Upload */}
-                                <div>
-                                    <h3 className="text-lg font-semibold mb-4">Resume & Documents</h3>
-                                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                                        <div className="text-center">
-                                            <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                                            <div className="mt-4">
-                                                <label htmlFor="file-upload" className="cursor-pointer">
-                                                    <span className="mt-2 block text-sm font-medium text-gray-900">
-                                                        Upload your resume and cover letter
-                                                    </span>
-                                                    <span className="mt-1 block text-sm text-gray-500">PDF, DOC, or DOCX up to 10MB</span>
-                                                </label>
-                                                <input
-                                                    id="file-upload"
-                                                    name="file-upload"
-                                                    type="file"
-                                                    className="sr-only"
-                                                    multiple
-                                                    accept=".pdf,.doc,.docx"
-                                                    onChange={handleFileUpload}
-                                                />
-                                            </div>
-                                            <Button type="button" variant="outline" className="mt-4">
-                                                Choose Files
-                                            </Button>
-                                        </div>
-                                    </div>
-
-                                    {uploadedFiles.length > 0 && (
-                                        <div className="mt-4 space-y-2">
-                                            {uploadedFiles.map((file, index) => (
-                                                <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
-                                                    <span className="text-sm text-gray-700">{file.name}</span>
-                                                    <Button type="button" variant="ghost" size="sm" onClick={() => removeFile(index)}>
-                                                        <X className="w-4 h-4" />
-                                                    </Button>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Cover Letter */}
-                                <div>
-                                    <Label htmlFor="coverLetter">Cover Letter</Label>
-                                    <Textarea
-                                        id="coverLetter"
-                                        value={formData.coverLetter}
-                                        onChange={(e) => handleInputChange("coverLetter", e.target.value)}
-                                        placeholder="Tell us why you're interested in this position and what makes you a great fit..."
-                                        rows={6}
-                                    />
-                                </div>
-
-                                {/* Submit button */}
-                                <div className="pt-6">
-                                    <Button
-                                        type="submit"
-                                        className="w-full bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                                        size="lg"
+                    <Card className="border-0 shadow-lg">
+                        <CardContent className="pt-12 pb-12">
+                            <div className="text-center max-w-md mx-auto">
+                                {/* Success Icon */}
+                                <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                                    <svg
+                                        className="w-10 h-10 text-white"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={3}
                                     >
-                                        {isSubmitting ? "Submitting Application..." : "Submit Application"}
-                                    </Button>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
                                 </div>
-                            </form>
+
+                                {/* Success Title */}
+                                <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                                    Application Submitted Successfully! 🎉
+                                </h1>
+
+                                {/* Success Message */}
+                                <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                                    Thank you for applying to the <span className="font-semibold text-gray-800">{MOCK_JOB.title}</span> position at <span className="font-semibold text-gray-800">{MOCK_JOB.company}</span>.
+                                </p>
+
+                                {/* Additional Info */}
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+                                    <div className="flex items-start space-x-3">
+                                        <div className="flex-shrink-0">
+                                            <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div className="text-left">
+                                            <h3 className="text-sm font-medium text-blue-800 mb-1">What happens next?</h3>
+                                            <p className="text-sm text-blue-700">
+                                                We'll review your application and get back to you within <strong>5-7 business days</strong>.
+                                                Keep an eye on your email for updates!
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="space-y-3">
+                                    <Link href="/job-seeker/browse-jobs">
+                                        <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
+                                            Browse More Jobs
+                                        </Button>
+                                    </Link>
+                                    <Link href="/job-seeker/applications">
+                                        <Button
+                                            variant="outline"
+                                            className="w-full bg-yellow-300 hover:bg-yellow-400 text-white font-medium py-3 rounded-lg transition-all duration-200 mt-4"
+                                        >
+                                            View My Applications
+                                        </Button>
+                                    </Link>
+                                </div>
+
+                                {/* Decorative Elements */}
+                                <div className="mt-8 flex justify-center space-x-2">
+                                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                                </div>
+                            </div>
                         </CardContent>
                     </Card>
                 </div>
+
 
                 {/* Job summary sidebar */}
                 {/* <div>
