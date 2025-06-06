@@ -30,7 +30,6 @@ export default function Navbar({ userType, activePage }: NavbarProps) {
 
   const employerLinks = [
     { name: "Dashboard", href: "/employer/dashboard" },
-    { name: "Job Postings", href: "/employer/jobPostings" },
     { name: "Applications", href: "/employer/applications" },
     { name: "Company Profile", href: "/employer/profile" },
   ]

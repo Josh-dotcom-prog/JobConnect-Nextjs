@@ -307,141 +307,79 @@ export default function ApplicationDetailPage() {
                                     </div>
                                 </div>
                             </div>
-                            {/* <div className="flex items-center space-x-3">
-                                <Button variant="outline" onClick={openNotesModal}>
-                                    <MessageSquare className="w-4 h-4 mr-2" />
-                                    Add Notes
-                                </Button>
-                                <Select value={application.status} onValueChange={handleStatusChange}>
-                                    <SelectTrigger className="w-[150px]">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="new">New</SelectItem>
-                                        <SelectItem value="review">In Review</SelectItem>
-                                        <SelectItem value="interview">Interview</SelectItem>
-                                        <SelectItem value="offer">Offer Sent</SelectItem>
-                                        <SelectItem value="hired">Hired</SelectItem>
-                                        <SelectItem value="rejected">Rejected</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div> */}
                         </div>
                     </CardHeader>
                 </Card>
 
                 <Tabs defaultValue="overview" className="space-y-6">
-                    <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="overview">Overview</TabsTrigger>
-                    </TabsList>
-
                     <TabsContent value="overview" className="space-y-6">
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            {/* Main content */}
-                            <div className="lg:col-span-2 space-y-6">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Cover Letter</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p className="text-gray-700 whitespace-pre-line">{application.coverLetter}</p>
-                                    </CardContent>
-                                </Card>
-
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Skills</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="flex flex-wrap gap-2">
-                                            {application.skills.map((skill, index) => (
-                                                <Badge key={index} variant="outline">
-                                                    {skill}
-                                                </Badge>
-                                            ))}
+                        {/* Main content */}
+                        <div className="lg:col-span-2 space-y-6">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Education</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex items-start space-x-3">
+                                        <GraduationCap className="w-5 h-5 text-gray-400 mt-1" />
+                                        <div>
+                                            <p className="font-medium">{application.education}</p>
                                         </div>
-                                    </CardContent>
-                                </Card>
+                                    </div>
+                                </CardContent>
+                            </Card>
 
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Professional Experience</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="flex items-start space-x-3">
-                                            <Briefcase className="w-5 h-5 text-gray-400 mt-1" />
-                                            <div>
-                                                <p className="font-medium">{application.experience}</p>
-                                                <p className="text-gray-500">Applied for {application.position}</p>
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Skills</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex flex-wrap gap-2">
+                                        {application.skills.map((skill, index) => (
+                                            <Badge key={index} variant="outline">
+                                                {skill}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Professional Experience</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex items-start space-x-3">
+                                        <Briefcase className="w-5 h-5 text-gray-400 mt-1" />
+                                        <div>
+                                            <p className="font-medium">{application.experience}</p>
+                                            <p className="text-gray-500">Applied for {application.position}</p>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Documents & Links</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-3">
+                                    {application.resumeUrl && (
+                                        <div className="flex items-center justify-between p-3 border rounded-lg">
+                                            <div className="flex items-center space-x-3">
+                                                <FileText className="w-5 h-5 text-gray-400" />
+                                                <span>Resume.pdf</span>
                                             </div>
+                                            <Button variant="outline" size="sm" asChild>
+                                                <a href="/assets/OBWANA CV-1.pdf" target="_blank" rel="noopener noreferrer">
+                                                    <Eye className="w-4 h-4 mr-1" />
+                                                    View
+                                                </a>
+                                            </Button>
                                         </div>
-                                    </CardContent>
-                                </Card>
-
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Documents & Links</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="space-y-3">
-                                        {application.resumeUrl && (
-                                            <div className="flex items-center justify-between p-3 border rounded-lg">
-                                                <div className="flex items-center space-x-3">
-                                                    <FileText className="w-5 h-5 text-gray-400" />
-                                                    <span>Resume.pdf</span>
-                                                </div>
-                                                <Button variant="outline" size="sm" asChild>
-                                                    <a href="/assets/OBWANA CV-1.pdf" target="_blank" rel="noopener noreferrer">
-                                                        <Eye className="w-4 h-4 mr-1" />
-                                                        View
-                                                    </a>
-                                                </Button>
-                                            </div>
-                                        )}
-                                    </CardContent>
-                                </Card>
-                            </div>
-
-                            {/* Sidebar */}
-                            <div className="space-y-6">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Application Details</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">Experience:</span>
-                                            <span className="font-medium">{application.experience}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">Expected Salary:</span>
-                                            <span className="font-medium">{application.expectedSalary}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">Availability:</span>
-                                            <span className="font-medium">{application.availability}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-500">Work Authorization:</span>
-                                            <span className="font-medium">{application.workAuthorization}</span>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Education</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="flex items-start space-x-3">
-                                            <GraduationCap className="w-5 h-5 text-gray-400 mt-1" />
-                                            <div>
-                                                <p className="font-medium">{application.education}</p>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-
-                            </div>
+                                    )}
+                                </CardContent>
+                            </Card>
                         </div>
                     </TabsContent>
 
