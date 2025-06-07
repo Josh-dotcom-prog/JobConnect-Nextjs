@@ -71,7 +71,7 @@ export default function CreateJobForm() {
                                 <Briefcase className="h-6 w-6 text-white" />
                                 <h2 className="text-xl font-semibold text-white">Create New Job Posting</h2>
                             </div>
-                            <button className="text-indigo-200 hover:text-white">
+                            <button className="text-blue-200 hover:text-white">
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
@@ -95,7 +95,7 @@ export default function CreateJobForm() {
                                     required
                                     value={formData.title}
                                     onChange={handleInputChange}
-                                    className="block w-full pl-3 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    className="block w-full pl-3 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="e.g. Senior Software Engineer"
                                 />
                             </div>
@@ -119,7 +119,7 @@ export default function CreateJobForm() {
                                         required
                                         value={formData.location}
                                         onChange={handleInputChange}
-                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         placeholder="e.g. New York, NY or Remote"
                                     />
                                 </div>
@@ -136,7 +136,7 @@ export default function CreateJobForm() {
                                     required
                                     value={formData.job_type}
                                     onChange={handleInputChange}
-                                    className="mt-1 block w-full pl-3 pr-10 py-3 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 rounded-md"
+                                    className="mt-1 block w-full pl-3 pr-10 py-3 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-md"
                                 >
                                     <option value="full_time">Full-time</option>
                                     <option value="part_time">Part-time</option>
@@ -162,7 +162,7 @@ export default function CreateJobForm() {
                                     min="0"
                                     value={formData.base_salary}
                                     onChange={handleInputChange}
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="e.g. 85000"
                                 />
                             </div>
@@ -184,7 +184,7 @@ export default function CreateJobForm() {
                                     required
                                     value={formData.description}
                                     onChange={handleInputChange}
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="Describe the role, company culture, and what makes this opportunity special..."
                                 />
                             </div>
@@ -201,7 +201,7 @@ export default function CreateJobForm() {
                                 rows={4}
                                 value={formData.responsibilities}
                                 onChange={handleInputChange}
-                                className="mt-1 block w-full pl-3 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="mt-1 block w-full pl-3 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="List the main responsibilities of the role (bullet points work well)..."
                             />
                         </div>
@@ -218,7 +218,7 @@ export default function CreateJobForm() {
                                 required
                                 value={formData.requirements}
                                 onChange={handleInputChange}
-                                className="mt-1 block w-full pl-3 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="mt-1 block w-full pl-3 pr-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="List the required skills, qualifications, and experience..."
                             />
                         </div>
@@ -228,7 +228,7 @@ export default function CreateJobForm() {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-700 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-700 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isSubmitting ? (
                                     "Creating..."

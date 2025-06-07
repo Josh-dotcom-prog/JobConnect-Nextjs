@@ -1,7 +1,5 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
@@ -11,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Bell, ArrowLeft, Save, Plus, Menu, X, Check, Upload } from "lucide-react"
+import Image from "next/image"
 
 interface JobSeekerProfile {
     firstName: string
@@ -19,8 +18,9 @@ interface JobSeekerProfile {
     phone: string
     experience: string
     education: string
-    profilePicture?: string
-    resume?: string
+    profilePicture?: File | string
+    resume?: File | string
+    userId?: number
 }
 
 interface ValidationErrors {
@@ -40,11 +40,16 @@ export default function JobSeekerProfilePage() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [userMenuOpen, setUserMenuOpen] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [errors, setErrors] = useState<ValidationErrors>({})
     const [touched, setTouched] = useState<Record<string, boolean>>({})
     const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null)
     const [profilePicturePreview, setProfilePicturePreview] = useState<string | null>(null)
+    const [resumeFile, setResumeFile] = useState<File | null>(null)
     const [newSkill, setNewSkill] = useState("")
+
+    // This should come from your authentication system
+    const currentUserId = 4 // Replace with actual user ID from auth context/state
 
     const [profile, setProfile] = useState<JobSeekerProfile>({
         firstName: "",
@@ -53,7 +58,72 @@ export default function JobSeekerProfilePage() {
         phone: "",
         experience: "",
         education: "",
+        userId: currentUserId
     })
+
+    // API functions
+    const submitJobseekerProfile = async (profileData: FormData) => {
+        const response = await fetch('http://127.0.0.1:8000/jobseeker/profile', {
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+            },
+            body: profileData
+        })
+
+        if (!response.ok) {
+            const errorData = await response.json()
+            throw new Error(errorData.detail || 'Failed to submit profile')
+        }
+
+        return response.json()
+    }
+
+    const getJobseekerProfile = async (userId: number) => {
+        const response = await fetch(`http://127.0.0.1:8000/jobseeker/profile?user_id=${userId}`, {
+            headers: {
+                'accept': 'application/json'
+            }
+        })
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                // Profile doesn't exist yet, return null
+                return null
+            }
+            throw new Error('Failed to fetch profile')
+        }
+
+        return response.json()
+    }
+
+    const getJobseekerResume = async (userId: number) => {
+        const response = await fetch(`http://127.0.0.1:8000/jobseeker/profile/${userId}/resume`, {
+            headers: {
+                'accept': 'application/json'
+            }
+        })
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch resume')
+        }
+
+        return response.blob()
+    }
+
+    const getJobseekerProfileImage = async (userId: number) => {
+        const response = await fetch(`http://127.0.0.1:8000/jobseeker/profile/${userId}/image`, {
+            headers: {
+                'accept': 'application/json'
+            }
+        })
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch profile image')
+        }
+
+        return response.blob()
+    }
 
     // Validation functions
     const validateEmail = (email: string): boolean => {
@@ -121,16 +191,60 @@ export default function JobSeekerProfilePage() {
     const validateForm = (): ValidationErrors => {
         const newErrors: ValidationErrors = {}
 
-        Object.keys(profile).forEach((key) => {
-            const field = key as keyof JobSeekerProfile
-            const error = validateField(field, profile[field])
+        // Validate basic fields
+        const fieldsToValidate: (keyof JobSeekerProfile)[] = ['firstName', 'lastName', 'email', 'phone', 'experience', 'education']
+
+        fieldsToValidate.forEach((field) => {
+            const error = validateField(field, profile[field]?.toString())
             if (error) {
-                newErrors[field] = error
+                newErrors[field as keyof Omit<JobSeekerProfile, 'userId'>] = error
             }
         })
-
         return newErrors
     }
+
+    // Load existing profile data
+    useEffect(() => {
+        const loadProfile = async () => {
+            try {
+                setIsLoading(true)
+                const existingProfile = await getJobseekerProfile(currentUserId)
+
+                if (existingProfile) {
+                    setProfile({
+                        firstName: existingProfile.first_name || "",
+                        lastName: existingProfile.last_name || "",
+                        email: existingProfile.email || "",
+                        phone: existingProfile.phone_number || "",
+                        experience: existingProfile.work_experience || "",
+                        education: existingProfile.education_level || "",
+                        userId: currentUserId
+                    })
+
+                    // Load profile image if exists
+                    try {
+                        const imageBlob = await getJobseekerProfileImage(currentUserId)
+                        const imageUrl = URL.createObjectURL(imageBlob)
+                        setProfilePicturePreview(imageUrl)
+                    } catch (error) {
+                        // Profile image doesn't exist, that's okay
+                        console.log('No profile image found')
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error)
+                toast({
+                    title: "Error",
+                    description: "Failed to load profile data.",
+                    variant: "destructive",
+                })
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        loadProfile()
+    }, [currentUserId, toast])
 
     const handleProfilePictureUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
@@ -159,15 +273,37 @@ export default function JobSeekerProfilePage() {
         reader.onload = (e) => {
             const result = e.target?.result as string
             setProfilePicturePreview(result)
-            setProfile((prev) => ({ ...prev, profilePicture: result }))
         }
         reader.readAsDataURL(file)
+    }
+
+    const handleResumeUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        if (!file) return
+
+        // Validate file type
+        const allowedTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
+        if (!allowedTypes.includes(file.type)) {
+            setErrors(prev => ({ ...prev, resume: "Please upload a valid resume file (PDF, DOC, or DOCX)" }))
+            return
+        }
+
+        // Validate file size (max 10MB)
+        const maxSize = 10 * 1024 * 1024 // 10MB in bytes
+        if (file.size > maxSize) {
+            setErrors(prev => ({ ...prev, resume: "Resume file size must be less than 10MB" }))
+            return
+        }
+
+        // Clear errors and set file
+        setErrors(prev => ({ ...prev, resume: undefined }))
+        setResumeFile(file)
+        setProfile(prev => ({ ...prev, resume: file.name }))
     }
 
     const removeProfilePicture = () => {
         setProfilePictureFile(null)
         setProfilePicturePreview(null)
-        setProfile((prev) => ({ ...prev, profilePicture: undefined }))
         setErrors((prev) => ({ ...prev, profilePicture: undefined }))
 
         // Reset the file input
@@ -177,11 +313,20 @@ export default function JobSeekerProfilePage() {
         }
     }
 
+    const removeResume = () => {
+        setResumeFile(null)
+        setProfile(prev => ({ ...prev, resume: undefined }))
+        setErrors(prev => ({ ...prev, resume: undefined }))
+
+        const fileInput = document.getElementById("resume-upload") as HTMLInputElement
+        if (fileInput) fileInput.value = ""
+    }
+
     const handleFieldChange = (field: keyof JobSeekerProfile, value: string | string[]) => {
         setProfile((prev) => ({ ...prev, [field]: value }))
 
         // Clear error for this field when user starts typing
-        if (errors[field]) {
+        if (errors[field as keyof typeof errors]) {
             setErrors((prev) => ({ ...prev, [field]: undefined }))
         }
 
@@ -191,38 +336,15 @@ export default function JobSeekerProfilePage() {
             setErrors((prev) => ({ ...prev, [field]: error }))
         }
     }
-
     const handleFieldBlur = (field: keyof JobSeekerProfile) => {
         setTouched((prev) => ({ ...prev, [field]: true }))
-        const error = validateField(field, profile[field])
+        const error = validateField(field, String(profile[field]))
         setErrors((prev) => ({ ...prev, [field]: error }))
     }
 
-
-    // Load saved profile data from localStorage
-    useEffect(() => {
-        const savedProfile = localStorage.getItem("jobSeekerProfile")
-        if (savedProfile) {
-            try {
-                const parsedProfile = JSON.parse(savedProfile)
-                setProfile(parsedProfile)
-                if (parsedProfile.profilePicture) {
-                    setProfilePicturePreview(parsedProfile.profilePicture)
-                }
-            } catch (error) {
-                console.error("Error loading saved profile:", error)
-            }
-        }
-    }, [])
-
-    const tabs = [
-        { id: "basic-info", label: "Basic Information" },
-        { id: "professional", label: "Professional Details" },
-    ]
-
     const handleSaveProfile = async () => {
         // Mark all fields as touched
-        const allFields = Object.keys(profile) as (keyof JobSeekerProfile)[]
+        const allFields: (keyof JobSeekerProfile)[] = ['firstName', 'lastName', 'email', 'phone', 'experience', 'education']
         const newTouched = allFields.reduce((acc, field) => ({ ...acc, [field]: true }), {})
         setTouched(newTouched)
 
@@ -249,11 +371,27 @@ export default function JobSeekerProfilePage() {
                 description: "Updating your profile.",
             })
 
-            // Simulate API call delay
-            await new Promise((resolve) => setTimeout(resolve, 1500))
+            // Create FormData object
+            const formData = new FormData()
 
-            // In a real app, this would be an API call
-            localStorage.setItem("jobSeekerProfile", JSON.stringify(profile))
+            // Map frontend field names to backend field names
+            formData.append('first_name', profile.firstName)
+            formData.append('last_name', profile.lastName)
+            formData.append('phone_number', profile.phone)
+            formData.append('work_experience', profile.experience)
+            formData.append('education_level', profile.education)
+            formData.append('user_id', currentUserId.toString())
+
+            // Add files if they exist
+            if (profilePictureFile) {
+                formData.append('profile_pic', profilePictureFile)
+            }
+            if (resumeFile) {
+                formData.append('resume', resumeFile)
+            }
+
+            // Submit to API
+            await submitJobseekerProfile(formData)
 
             toast({
                 title: "Profile Saved!",
@@ -261,14 +399,31 @@ export default function JobSeekerProfilePage() {
             })
 
         } catch (error) {
+            console.error('Error saving profile:', error)
             toast({
                 title: "Error",
-                description: "Failed to save profile. Please try again.",
+                description: error instanceof Error ? error.message : "Failed to save profile. Please try again.",
                 variant: "destructive",
             })
         } finally {
             setIsSubmitting(false)
         }
+    }
+
+    const tabs = [
+        { id: "basic-info", label: "Basic Information" },
+        { id: "professional", label: "Professional Details" },
+    ]
+
+    if (isLoading) {
+        return (
+            <div className="bg-gray-50 min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Loading your profile...</p>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -316,7 +471,7 @@ export default function JobSeekerProfilePage() {
                                         <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                             Your Profile
                                         </a>
-                                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <a href="/auth" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                             Sign out
                                         </a>
                                     </div>
@@ -434,9 +589,11 @@ export default function JobSeekerProfilePage() {
                                                 <div className="flex-shrink-0">
                                                     <div className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
                                                         {profilePicturePreview ? (
-                                                            <img
-                                                                src={profilePicturePreview || "/placeholder.svg"}
+                                                            <Image
+                                                                src={profilePicturePreview}
                                                                 alt="Profile picture preview"
+                                                                width={80}
+                                                                height={80}
                                                                 className="w-full h-full object-cover rounded-full"
                                                             />
                                                         ) : (
@@ -575,11 +732,8 @@ export default function JobSeekerProfilePage() {
                                                 onChange={(e) => handleFieldChange("experience", e.target.value)}
                                                 onBlur={() => handleFieldBlur("experience")}
                                                 className={`mt-1 ${errors.experience ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
-                                                placeholder="List your work experience including company names, positions, dates, and key responsibilities/achievements..."
+                                                placeholder="Describe your work experience, including job titles, companies, responsibilities, and achievements."
                                             />
-                                            <p className="text-sm text-gray-500 mt-1">
-                                                Include your most relevant work experiences, starting with the most recent.
-                                            </p>
                                             {errors.experience && <p className="mt-1 text-sm text-red-600">{errors.experience}</p>}
                                         </div>
 
@@ -594,91 +748,80 @@ export default function JobSeekerProfilePage() {
                                                 onChange={(e) => handleFieldChange("education", e.target.value)}
                                                 onBlur={() => handleFieldBlur("education")}
                                                 className={`mt-1 ${errors.education ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
-                                                placeholder="List your educational background including degrees, institutions, graduation dates, and relevant coursework or achievements..."
+                                                placeholder="List your educational background, including degrees, institutions, and years of attendance."
                                             />
-                                            <p className="text-sm text-gray-500 mt-1">
-                                                Include your highest level of education and any relevant certifications or training.
-                                            </p>
                                             {errors.education && <p className="mt-1 text-sm text-red-600">{errors.education}</p>}
                                         </div>
-                                    </div>
 
-                                    <div className="sm:col-span-3">
-                                        <label htmlFor="resume-upload" className="block text-sm font-bold text-gray-700">
-                                            Resume *
-                                        </label>
-                                        <div className="mt-1">
-                                            <div className="flex items-center space-x-4">
-                                                <label htmlFor="resume-upload">
-                                                    <Button type="button" variant="outline" size="sm" className="cursor-pointer" asChild>
-                                                        <span>
-                                                            <Upload className="w-4 h-4 mr-2" />
-                                                            {profile.resume ? "Change Resume" : "Upload Resume"}
-                                                        </span>
-                                                    </Button>
-                                                </label>
-                                                {profile.resume && (
-                                                    <Button
-                                                        type="button"
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => {
-                                                            setProfile(prev => ({ ...prev, resume: undefined }))
-                                                            setErrors(prev => ({ ...prev, resume: undefined }))
-                                                            const fileInput = document.getElementById("resume-upload") as HTMLInputElement
-                                                            if (fileInput) fileInput.value = ""
-                                                        }}
-                                                        className="text-red-600 hover:text-red-700"
-                                                    >
-                                                        <X className="w-4 h-4 mr-2" />
-                                                        Remove
-                                                    </Button>
+                                        <div className="sm:col-span-6">
+                                            <label className="block text-sm font-bold text-gray-700 mb-2">Resume/CV</label>
+                                            <div className="flex items-start gap-4">
+                                                {resumeFile ? (
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-2">
+                                                            <Badge variant="outline" className="px-3 py-1 text-sm">
+                                                                <Check className="w-4 h-4 mr-2 text-green-500" />
+                                                                {resumeFile.name}
+                                                            </Badge>
+                                                            <Button
+                                                                type="button"
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={removeResume}
+                                                                className="text-red-600 hover:text-red-700"
+                                                            >
+                                                                <X className="w-4 h-4 mr-1" />
+                                                                Remove
+                                                            </Button>
+                                                        </div>
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                            Last updated: {new Date().toLocaleDateString()}
+                                                        </p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex-1">
+                                                        <label htmlFor="resume-upload">
+                                                            <Button type="button" variant="outline" size="sm" className="cursor-pointer" asChild>
+                                                                <span>
+                                                                    <Upload className="w-4 h-4 mr-2" />
+                                                                    Upload Resume
+                                                                </span>
+                                                            </Button>
+                                                        </label>
+                                                        <input
+                                                            id="resume-upload"
+                                                            type="file"
+                                                            accept=".pdf,.doc,.docx"
+                                                            onChange={handleResumeUpload}
+                                                            className="hidden"
+                                                        />
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                            PDF, DOC, or DOCX. Max file size: 10MB
+                                                        </p>
+                                                    </div>
                                                 )}
                                             </div>
-                                            <input
-                                                id="resume-upload"
-                                                type="file"
-                                                accept=".pdf,.doc,.docx"
-                                                onChange={(e) => {
-                                                    const file = e.target.files?.[0]
-                                                    if (!file) return
-
-                                                    // Validate file type
-                                                    const allowedTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
-                                                    if (!allowedTypes.includes(file.type)) {
-                                                        setErrors(prev => ({ ...prev, resume: "Please upload a valid resume file (PDF, DOC, or DOCX)" }))
-                                                        return
-                                                    }
-
-                                                    // Validate file size (max 10MB)
-                                                    const maxSize = 10 * 1024 * 1024 // 10MB in bytes
-                                                    if (file.size > maxSize) {
-                                                        setErrors(prev => ({ ...prev, resume: "Resume file size must be less than 10MB" }))
-                                                        return
-                                                    }
-
-                                                    // Clear errors and set file
-                                                    setErrors(prev => ({ ...prev, resume: undefined }))
-                                                    setProfile(prev => ({ ...prev, resume: file.name }))
-                                                }}
-                                                className="hidden"
-                                            />
-                                            {profile.resume && (
-                                                <div className="mt-2 flex items-center text-sm text-green-600">
-                                                    <Check className="w-4 h-4 mr-1" />
-                                                    {profile.resume}
-                                                </div>
-                                            )}
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                Upload your resume in PDF, DOC, or DOCX format (max 10MB)
-                                            </p>
                                             {errors.resume && <p className="mt-1 text-sm text-red-600">{errors.resume}</p>}
                                         </div>
                                     </div>
-
                                 </CardContent>
                             </Card>
                         )}
+
+                        {/* Save Button (Sticky Footer) */}
+                        <div className="sticky bottom-0 bg-white border-t border-gray-200 py-4 px-4 sm:px-6 lg:px-8">
+                            <div className="flex justify-end">
+                                <Button
+                                    onClick={handleSaveProfile}
+                                    className="ml-3"
+                                    disabled={isSubmitting}
+                                    size="lg"
+                                >
+                                    <Save className="w-4 h-4 mr-2" />
+                                    {isSubmitting ? "Saving..." : "Save Changes"}
+                                </Button>
+                            </div>
+                        </div>
                     </div>
                 </main>
             </div>
