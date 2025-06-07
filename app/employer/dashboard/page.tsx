@@ -1,6 +1,6 @@
 "use client"
-
 import { useState, useEffect } from "react"
+import axios from "axios"
 import Link from "next/link"
 import Navbar from "@/components/navigation/navbar"
 
@@ -258,10 +258,15 @@ const processBackendData = (data: { jobs?: any[]; applications?: any[] }) => {
   const applications = data.applications || []
 
   // Calculate stats
-  const activeJobs = jobs.filter(job => job.is_active).length
-  const totalApplications = applications.length
+  const totalApplications = applicants.length
   const jobViews = Math.floor(Math.random() * 2000) + 500 // Simulated since not in your data
   const interviewsScheduled = Math.floor(Math.random() * 15) + 5 // Simulated
+
+  // Group applications by job ID to count applicants per job
+  const jobApplicantCountMap = applicants.reduce((acc: Record<number, number>, app: any) => {
+    acc[app.job.id] = (acc[app.job.id] || 0) + 1
+    return acc
+  }, {})
 
   // Format job type
   const formatJobType = (type: string) => {
@@ -272,10 +277,12 @@ const processBackendData = (data: { jobs?: any[]; applications?: any[] }) => {
       default: return type
     }
   }
+
   // Format salary (assuming it's in Uganda Shillings)
   const formatSalary = (salary: number) => {
     return `UGX ${(salary / 1000000).toFixed(1)}M`
   }
+
   // Get job icon based on title
   const getJobIcon = (title: string) => {
     const lowerTitle = title.toLowerCase()
@@ -286,39 +293,36 @@ const processBackendData = (data: { jobs?: any[]; applications?: any[] }) => {
     if (lowerTitle.includes('support') || lowerTitle.includes('it')) return 'fa-tools'
     return 'fa-briefcase'
   }
-  // Count applications per job
-  const getApplicationCount = (jobId: number) => {
-    // Since your applications don't have job_id, we'll simulate counts
-    return Math.floor(Math.random() * 50) + 5
-  }
 
-  // Process jobs
-  const recentJobs = jobs.slice(0, 5).map(job => ({
-    id: job.id,
-    title: job.title,
-    type: formatJobType(job.job_type),
-    location: job.location,
-    salary: formatSalary(job.base_salary),
-    status: job.is_active ? 'active' : 'inactive',
-    createdAt: job.created_at,
-    applicantCount: getApplicationCount(job.id),
-    icon: getJobIcon(job.title)
-  }))
+  // Process jobs from unique job objects in applicants
+  const jobsMap = new Map<number, any>()
+  applicants.forEach((app: any) => {
+    const job = app.job
+    if (!jobsMap.has(job.id)) {
+      jobsMap.set(job.id, {
+        id: job.id,
+        title: job.title,
+        type: formatJobType(job.job_type),
+        location: job.location,
+        salary: formatSalary(job.base_salary),
+        status: 'active',
+        createdAt: job.created_at,
+        applicantCount: jobApplicantCountMap[job.id],
+        icon: getJobIcon(job.title)
+      })
+    }
+  })
 
-  // Generate dummy jobseeker names for applications
-  const jobseekerNames = [
-    'John Doe', 'Jane Smith', 'David Johnson', 'Sarah Wilson',
-    'Michael Brown', 'Emily Davis', 'James Miller', 'Lisa Anderson'
-  ]
+  const recentJobs = Array.from(jobsMap.values()).slice(0, 5)
 
   // Process applications
-  const recentApplications = applications.slice(-10).map((app, index) => ({
+  const recentApplications = applicants.slice(-10).map((app: { id: any; jobseeker: { first_name: any; last_name: any; education_level: any; work_experience: string }; job: { title: any }; status: any; created_at: any }, index: number) => ({
     id: app.id,
-    name: jobseekerNames[app.jobseeker_id - 1] || `Jobseeker ${app.jobseeker_id}`,
-    jobTitle: jobs[Math.floor(Math.random() * jobs.length)]?.title || 'Unknown Position',
+    name: `${app.jobseeker.first_name} ${app.jobseeker.last_name}`,
+    jobTitle: app.job.title,
     status: app.status,
-    education: 'University Graduate', // Simulated
-    experience: `${Math.floor(Math.random() * 8) + 1} years experience`, // Simulated
+    education: app.jobseeker.education_level,
+    experience: app.jobseeker.work_experience.split('.')[0], // First sentence only
     appliedAt: app.created_at,
     avatar: `https://images.unsplash.com/photo-${1472099645785 + index}?w=40&h=40&fit=crop&crop=face&auto=format`
   }))
@@ -326,7 +330,7 @@ const processBackendData = (data: { jobs?: any[]; applications?: any[] }) => {
   return {
     companyName: "Passions Hotel",
     stats: {
-      activeJobs,
+      activeJobs: recentJobs.length,
       totalApplications,
       jobViews,
       interviewsScheduled
@@ -335,34 +339,34 @@ const processBackendData = (data: { jobs?: any[]; applications?: any[] }) => {
     recentApplications
   }
 }
-export default function EmployerDashboard() {
-  // Process your backend data
-  const [dashboardData, setDashboardData] = useState(() => processBackendData(backendData))
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
 
-  // Optional: Simulate API call or replace with actual fetch
+export default function EmployerDashboard() {
+  const [dashboardData, setDashboardData] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // Fetch real data from backend
   useEffect(() => {
-    // Uncomment this section when you want to fetch from your actual API
-    /*
-    const fetchDashboardData = async () => {
+    const fetchData = async () => {
       try {
-        setLoading(true)
-        const response = await fetch('/api/employer/dashboard')
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
-        const data = await response.json()
-        setDashboardData(processBackendData(data))
+        const response = await axios.get("http://127.0.0.1:8000/company/applicants", {
+          params: {
+            user_id: 1 // Replace with dynamic value as needed
+          }
+        })
+        const processedData = processBackendData(response.data)
+        setDashboardData(processedData)
       } catch (err) {
-        setError(err.message)
+        console.error("Error fetching dashboard data:", err)
+        setError("Failed to load dashboard data.")
       } finally {
         setLoading(false)
       }
     }
-    fetchDashboardData()
-    */
+
+    fetchData()
   }, [])
 
-  // Loading state
   if (loading) {
     return (
       <div className="bg-gray-50 min-h-screen">
@@ -374,8 +378,7 @@ export default function EmployerDashboard() {
     )
   }
 
-  // Error state
-  if (error) {
+  if (error || !dashboardData) {
     return (
       <div className="bg-gray-50 min-h-screen">
         <Navbar userType="employer" activePage="dashboard" />
@@ -384,7 +387,7 @@ export default function EmployerDashboard() {
             <div className="flex">
               <div className="ml-3">
                 <h3 className="text-sm font-medium text-red-800">Error loading dashboard</h3>
-                <p className="mt-1 text-sm text-red-700">{error}</p>
+                <p className="mt-1 text-sm text-red-700">{error || "No data available."}</p>
               </div>
             </div>
           </div>
@@ -396,7 +399,6 @@ export default function EmployerDashboard() {
   return (
     <div className="bg-gray-50">
       <Navbar userType="employer" activePage="dashboard" />
-
       <div className="py-10">
         <header>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -426,7 +428,6 @@ export default function EmployerDashboard() {
             </div>
           </div>
         </header>
-
         <main>
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {/* Stats */}
@@ -451,7 +452,6 @@ export default function EmployerDashboard() {
                     </div>
                   </div>
                 </div>
-
                 <div className="bg-white overflow-hidden shadow rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <div className="flex items-center">
@@ -471,7 +471,6 @@ export default function EmployerDashboard() {
                     </div>
                   </div>
                 </div>
-
                 <div className="bg-white overflow-hidden shadow rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <div className="flex items-center">
@@ -491,7 +490,6 @@ export default function EmployerDashboard() {
                     </div>
                   </div>
                 </div>
-
                 <div className="bg-white overflow-hidden shadow rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <div className="flex items-center">
@@ -514,7 +512,7 @@ export default function EmployerDashboard() {
               </div>
             </div>
 
-            {/* Job Management */}
+            {/* Recent Jobs */}
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-medium text-gray-900">Recent Job Postings</h2>
@@ -525,7 +523,7 @@ export default function EmployerDashboard() {
               <div className="bg-white shadow overflow-hidden sm:rounded-md">
                 <ul className="divide-y divide-gray-200">
                   {dashboardData.recentJobs.length > 0 ? (
-                    dashboardData.recentJobs.map((job) => (
+                    dashboardData.recentJobs.map((job: any) => (
                       <li key={job.id}>
                         <div className="px-4 py-4 sm:px-6">
                           <div className="flex items-center justify-between">
@@ -543,9 +541,7 @@ export default function EmployerDashboard() {
                               </div>
                             </div>
                             <div className="ml-2 flex-shrink-0 flex">
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${job.status === 'active'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-yellow-100 text-yellow-800'
+                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${job.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
                                 }`}>
                                 {job.status}
                               </span>
@@ -591,7 +587,7 @@ export default function EmployerDashboard() {
               <div className="bg-white shadow overflow-hidden sm:rounded-md">
                 <ul className="divide-y divide-gray-200">
                   {dashboardData.recentApplications.length > 0 ? (
-                    dashboardData.recentApplications.map((application) => (
+                    dashboardData.recentApplications.map((application: any) => (
                       <li key={application.id}>
                         <div className="px-4 py-4 sm:px-6">
                           <div className="flex items-center justify-between">
@@ -610,12 +606,12 @@ export default function EmployerDashboard() {
                             </div>
                             <div className="ml-2 flex-shrink-0 flex">
                               <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${application.status === 'pending'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : application.status === 'approved'
-                                  ? 'bg-green-100 text-green-800'
-                                  : application.status === 'rejected'
-                                    ? 'bg-red-100 text-red-800'
-                                    : 'bg-gray-100 text-gray-800'
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : application.status === 'approved'
+                                    ? 'bg-green-100 text-green-800'
+                                    : application.status === 'rejected'
+                                      ? 'bg-red-100 text-red-800'
+                                      : 'bg-gray-100 text-gray-800'
                                 }`}>
                                 {application.status}
                               </span>
