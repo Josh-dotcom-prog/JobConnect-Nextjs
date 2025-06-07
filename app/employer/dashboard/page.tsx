@@ -5,7 +5,7 @@ import Link from "next/link"
 import Navbar from "@/components/navigation/navbar"
 
 
-// Made a change
+
 // Your actual backend data
 const backendData = {
   "jobs": [
