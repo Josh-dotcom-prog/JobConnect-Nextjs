@@ -1,267 +1,23 @@
 "use client"
-
 import { useState, useEffect } from "react"
+import axios from "axios"
 import Link from "next/link"
 import Navbar from "@/components/navigation/navbar"
 
-
-
-// Your actual backend data
-const backendData = {
-  "jobs": [
-    {
-      "id": 1,
-      "employer_id": 1,
-      "title": "Software Engineer",
-      "job_type": "full_time",
-      "base_salary": 3500000,
-      "description": "Develop and maintain backend services.",
-      "responsibilities": "Build APIs, integrate databases, write clean code.",
-      "requirements": "Bachelor's in Computer Science, 2+ years experience.",
-      "location": "Kampala",
-      "is_active": true,
-      "created_at": "2025-06-07T08:54:19.664940",
-      "updated_at": "2025-06-07T08:54:19.664949"
-    },
-    {
-      "id": 2,
-      "employer_id": 1,
-      "title": "Data Analyst",
-      "job_type": "contract",
-      "base_salary": 2500000,
-      "description": "Interpret data and produce actionable insights.",
-      "responsibilities": "Use SQL and Python to process data.",
-      "requirements": "Degree in Statistics or Computer Science.",
-      "location": "Remote",
-      "is_active": true,
-      "created_at": "2025-06-07T08:54:43.220116",
-      "updated_at": "2025-06-07T08:54:43.220122"
-    },
-    {
-      "id": 3,
-      "employer_id": 1,
-      "title": "UI/UX Designer",
-      "job_type": "part_time",
-      "base_salary": 1800000,
-      "description": "Design user-friendly interfaces.",
-      "responsibilities": "Create wireframes and prototypes.",
-      "requirements": "Experience with Figma or Adobe XD.",
-      "location": "Kampala",
-      "is_active": true,
-      "created_at": "2025-06-07T08:55:05.731490",
-      "updated_at": "2025-06-07T08:55:05.731498"
-    },
-    {
-      "id": 4,
-      "employer_id": 1,
-      "title": "Technical Writer",
-      "job_type": "contract",
-      "base_salary": 1200000,
-      "description": "Write documentation and user manuals.",
-      "responsibilities": "Collaborate with devs to explain APIs.",
-      "requirements": "Excellent writing skills and tech background.",
-      "location": "Remote",
-      "is_active": true,
-      "created_at": "2025-06-07T08:56:45.118709",
-      "updated_at": "2025-06-07T08:56:45.118714"
-    },
-    {
-      "id": 5,
-      "employer_id": 1,
-      "title": "IT Support Specialist",
-      "job_type": "full_time",
-      "base_salary": 1500000,
-      "description": "Provide technical support to staff.",
-      "responsibilities": "Resolve hardware and software issues.",
-      "requirements": "Diploma in IT or related field.",
-      "location": "Gulu",
-      "is_active": true,
-      "created_at": "2025-06-07T08:57:06.134303",
-      "updated_at": "2025-06-07T08:57:06.134310"
-    }
-  ],
-  "applications": [
-    {
-      "id": 1,
-      "jobseeker_id": 1,
-      "status": "pending",
-      "created_at": "2025-06-07T09:00:57.210896",
-      "updated_at": "2025-06-07T09:00:57.210902"
-    },
-    {
-      "id": 2,
-      "jobseeker_id": 2,
-      "status": "pending",
-      "created_at": "2025-06-07T09:01:25.342300",
-      "updated_at": "2025-06-07T09:01:25.342308"
-    },
-    {
-      "id": 3,
-      "jobseeker_id": 3,
-      "status": "pending",
-      "created_at": "2025-06-07T09:01:32.598621",
-      "updated_at": "2025-06-07T09:01:32.598628"
-    },
-    {
-      "id": 4,
-      "jobseeker_id": 4,
-      "status": "pending",
-      "created_at": "2025-06-07T09:01:38.570974",
-      "updated_at": "2025-06-07T09:01:38.570982"
-    },
-    {
-      "id": 5,
-      "jobseeker_id": 5,
-      "status": "pending",
-      "created_at": "2025-06-07T09:01:45.183652",
-      "updated_at": "2025-06-07T09:01:45.183659"
-    },
-    {
-      "id": 6,
-      "jobseeker_id": 6,
-      "status": "pending",
-      "created_at": "2025-06-07T09:01:50.443840",
-      "updated_at": "2025-06-07T09:01:50.443847"
-    },
-    {
-      "id": 7,
-      "jobseeker_id": 7,
-      "status": "pending",
-      "created_at": "2025-06-07T09:01:59.515742",
-      "updated_at": "2025-06-07T09:01:59.515750"
-    },
-    {
-      "id": 8,
-      "jobseeker_id": 8,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:06.803170",
-      "updated_at": "2025-06-07T09:02:06.803177"
-    },
-    {
-      "id": 9,
-      "jobseeker_id": 8,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:14.552189",
-      "updated_at": "2025-06-07T09:02:14.552219"
-    },
-    {
-      "id": 10,
-      "jobseeker_id": 7,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:26.223049",
-      "updated_at": "2025-06-07T09:02:26.223057"
-    },
-    {
-      "id": 11,
-      "jobseeker_id": 6,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:33.577849",
-      "updated_at": "2025-06-07T09:02:33.577855"
-    },
-    {
-      "id": 12,
-      "jobseeker_id": 5,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:42.459271",
-      "updated_at": "2025-06-07T09:02:42.459280"
-    },
-    {
-      "id": 13,
-      "jobseeker_id": 4,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:48.797368",
-      "updated_at": "2025-06-07T09:02:48.797373"
-    },
-    {
-      "id": 14,
-      "jobseeker_id": 3,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:55.089508",
-      "updated_at": "2025-06-07T09:02:55.089513"
-    },
-    {
-      "id": 15,
-      "jobseeker_id": 2,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:01.299448",
-      "updated_at": "2025-06-07T09:03:01.299457"
-    },
-    {
-      "id": 16,
-      "jobseeker_id": 1,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:06.317113",
-      "updated_at": "2025-06-07T09:03:06.317120"
-    },
-    {
-      "id": 17,
-      "jobseeker_id": 1,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:11.955617",
-      "updated_at": "2025-06-07T09:03:11.955622"
-    },
-    {
-      "id": 18,
-      "jobseeker_id": 2,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:32.240851",
-      "updated_at": "2025-06-07T09:03:32.240858"
-    },
-    {
-      "id": 19,
-      "jobseeker_id": 3,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:40.229324",
-      "updated_at": "2025-06-07T09:03:40.229330"
-    },
-    {
-      "id": 20,
-      "jobseeker_id": 4,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:47.041170",
-      "updated_at": "2025-06-07T09:03:47.041177"
-    },
-    {
-      "id": 21,
-      "jobseeker_id": 5,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:53.441371",
-      "updated_at": "2025-06-07T09:03:53.441378"
-    },
-    {
-      "id": 22,
-      "jobseeker_id": 6,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:59.269373",
-      "updated_at": "2025-06-07T09:03:59.269381"
-    },
-    {
-      "id": 23,
-      "jobseeker_id": 7,
-      "status": "pending",
-      "created_at": "2025-06-07T09:04:07.083494",
-      "updated_at": "2025-06-07T09:04:07.083500"
-    },
-    {
-      "id": 24,
-      "jobseeker_id": 8,
-      "status": "pending",
-      "created_at": "2025-06-07T09:04:12.849835",
-      "updated_at": "2025-06-07T09:04:12.849843"
-    }
-  ]
-}
-
-// Helper functions to process your backend data
-const processBackendData = (data: { jobs?: any[]; applications?: any[] }) => {
-  const jobs = data.jobs || []
-  const applications = data.applications || []
+// Helper function to process backend data
+const processBackendData = (data: any) => {
+  const applicants = data.applicants || []
 
   // Calculate stats
-  const activeJobs = jobs.filter(job => job.is_active).length
-  const totalApplications = applications.length
+  const totalApplications = applicants.length
   const jobViews = Math.floor(Math.random() * 2000) + 500 // Simulated since not in your data
   const interviewsScheduled = Math.floor(Math.random() * 15) + 5 // Simulated
+
+  // Group applications by job ID to count applicants per job
+  const jobApplicantCountMap = applicants.reduce((acc: Record<number, number>, app: any) => {
+    acc[app.job.id] = (acc[app.job.id] || 0) + 1
+    return acc
+  }, {})
 
   // Format job type
   const formatJobType = (type: string) => {
@@ -272,10 +28,12 @@ const processBackendData = (data: { jobs?: any[]; applications?: any[] }) => {
       default: return type
     }
   }
+
   // Format salary (assuming it's in Uganda Shillings)
   const formatSalary = (salary: number) => {
     return `UGX ${(salary / 1000000).toFixed(1)}M`
   }
+
   // Get job icon based on title
   const getJobIcon = (title: string) => {
     const lowerTitle = title.toLowerCase()
@@ -286,47 +44,44 @@ const processBackendData = (data: { jobs?: any[]; applications?: any[] }) => {
     if (lowerTitle.includes('support') || lowerTitle.includes('it')) return 'fa-tools'
     return 'fa-briefcase'
   }
-  // Count applications per job
-  const getApplicationCount = (jobId: number) => {
-    // Since your applications don't have job_id, we'll simulate counts
-    return Math.floor(Math.random() * 50) + 5
-  }
 
-  // Process jobs
-  const recentJobs = jobs.slice(0, 5).map(job => ({
-    id: job.id,
-    title: job.title,
-    type: formatJobType(job.job_type),
-    location: job.location,
-    salary: formatSalary(job.base_salary),
-    status: job.is_active ? 'active' : 'inactive',
-    createdAt: job.created_at,
-    applicantCount: getApplicationCount(job.id),
-    icon: getJobIcon(job.title)
-  }))
+  // Process jobs from unique job objects in applicants
+  const jobsMap = new Map<number, any>()
+  applicants.forEach((app: any) => {
+    const job = app.job
+    if (!jobsMap.has(job.id)) {
+      jobsMap.set(job.id, {
+        id: job.id,
+        title: job.title,
+        type: formatJobType(job.job_type),
+        location: job.location,
+        salary: formatSalary(job.base_salary),
+        status: 'active',
+        createdAt: job.created_at,
+        applicantCount: jobApplicantCountMap[job.id],
+        icon: getJobIcon(job.title)
+      })
+    }
+  })
 
-  // Generate dummy jobseeker names for applications
-  const jobseekerNames = [
-    'John Doe', 'Jane Smith', 'David Johnson', 'Sarah Wilson',
-    'Michael Brown', 'Emily Davis', 'James Miller', 'Lisa Anderson'
-  ]
+  const recentJobs = Array.from(jobsMap.values()).slice(0, 5)
 
   // Process applications
-  const recentApplications = applications.slice(-10).map((app, index) => ({
+  const recentApplications = applicants.slice(-10).map((app: { id: any; jobseeker: { first_name: any; last_name: any; education_level: any; work_experience: string }; job: { title: any }; status: any; created_at: any }, index: number) => ({
     id: app.id,
-    name: jobseekerNames[app.jobseeker_id - 1] || `Jobseeker ${app.jobseeker_id}`,
-    jobTitle: jobs[Math.floor(Math.random() * jobs.length)]?.title || 'Unknown Position',
+    name: `${app.jobseeker.first_name} ${app.jobseeker.last_name}`,
+    jobTitle: app.job.title,
     status: app.status,
-    education: 'University Graduate', // Simulated
-    experience: `${Math.floor(Math.random() * 8) + 1} years experience`, // Simulated
+    education: app.jobseeker.education_level,
+    experience: app.jobseeker.work_experience.split('.')[0], // First sentence only
     appliedAt: app.created_at,
-    avatar: `https://images.unsplash.com/photo-${1472099645785 + index}?w=40&h=40&fit=crop&crop=face&auto=format`
+    avatar: `https://images.unsplash.com/photo-${1472099645785  + index}?w=40&h=40&fit=crop&crop=face&auto=format`
   }))
 
   return {
     companyName: "Passions Hotel",
     stats: {
-      activeJobs,
+      activeJobs: recentJobs.length,
       totalApplications,
       jobViews,
       interviewsScheduled
@@ -335,34 +90,34 @@ const processBackendData = (data: { jobs?: any[]; applications?: any[] }) => {
     recentApplications
   }
 }
-export default function EmployerDashboard() {
-  // Process your backend data
-  const [dashboardData, setDashboardData] = useState(() => processBackendData(backendData))
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
 
-  // Optional: Simulate API call or replace with actual fetch
+export default function EmployerDashboard() {
+  const [dashboardData, setDashboardData] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // Fetch real data from backend
   useEffect(() => {
-    // Uncomment this section when you want to fetch from your actual API
-    /*
-    const fetchDashboardData = async () => {
+    const fetchData = async () => {
       try {
-        setLoading(true)
-        const response = await fetch('/api/employer/dashboard')
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
-        const data = await response.json()
-        setDashboardData(processBackendData(data))
+        const response = await axios.get("http://127.0.0.1:8000/company/applicants", {
+          params: {
+            user_id: 1 // Replace with dynamic value as needed
+          }
+        })
+        const processedData = processBackendData(response.data)
+        setDashboardData(processedData)
       } catch (err) {
-        setError(err.message)
+        console.error("Error fetching dashboard data:", err)
+        setError("Failed to load dashboard data.")
       } finally {
         setLoading(false)
       }
     }
-    fetchDashboardData()
-    */
+
+    fetchData()
   }, [])
 
-  // Loading state
   if (loading) {
     return (
       <div className="bg-gray-50 min-h-screen">
@@ -374,8 +129,7 @@ export default function EmployerDashboard() {
     )
   }
 
-  // Error state
-  if (error) {
+  if (error || !dashboardData) {
     return (
       <div className="bg-gray-50 min-h-screen">
         <Navbar userType="employer" activePage="dashboard" />
@@ -384,7 +138,7 @@ export default function EmployerDashboard() {
             <div className="flex">
               <div className="ml-3">
                 <h3 className="text-sm font-medium text-red-800">Error loading dashboard</h3>
-                <p className="mt-1 text-sm text-red-700">{error}</p>
+                <p className="mt-1 text-sm text-red-700">{error || "No data available."}</p>
               </div>
             </div>
           </div>
@@ -396,7 +150,6 @@ export default function EmployerDashboard() {
   return (
     <div className="bg-gray-50">
       <Navbar userType="employer" activePage="dashboard" />
-
       <div className="py-10">
         <header>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -426,7 +179,6 @@ export default function EmployerDashboard() {
             </div>
           </div>
         </header>
-
         <main>
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {/* Stats */}
@@ -451,7 +203,6 @@ export default function EmployerDashboard() {
                     </div>
                   </div>
                 </div>
-
                 <div className="bg-white overflow-hidden shadow rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <div className="flex items-center">
@@ -471,7 +222,6 @@ export default function EmployerDashboard() {
                     </div>
                   </div>
                 </div>
-
                 <div className="bg-white overflow-hidden shadow rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <div className="flex items-center">
@@ -491,7 +241,6 @@ export default function EmployerDashboard() {
                     </div>
                   </div>
                 </div>
-
                 <div className="bg-white overflow-hidden shadow rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <div className="flex items-center">
@@ -514,7 +263,7 @@ export default function EmployerDashboard() {
               </div>
             </div>
 
-            {/* Job Management */}
+            {/* Recent Jobs */}
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-medium text-gray-900">Recent Job Postings</h2>
@@ -525,7 +274,7 @@ export default function EmployerDashboard() {
               <div className="bg-white shadow overflow-hidden sm:rounded-md">
                 <ul className="divide-y divide-gray-200">
                   {dashboardData.recentJobs.length > 0 ? (
-                    dashboardData.recentJobs.map((job) => (
+                    dashboardData.recentJobs.map((job: any) => (
                       <li key={job.id}>
                         <div className="px-4 py-4 sm:px-6">
                           <div className="flex items-center justify-between">
@@ -543,10 +292,9 @@ export default function EmployerDashboard() {
                               </div>
                             </div>
                             <div className="ml-2 flex-shrink-0 flex">
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${job.status === 'active'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-yellow-100 text-yellow-800'
-                                }`}>
+                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                job.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                              }`}>
                                 {job.status}
                               </span>
                             </div>
@@ -591,7 +339,7 @@ export default function EmployerDashboard() {
               <div className="bg-white shadow overflow-hidden sm:rounded-md">
                 <ul className="divide-y divide-gray-200">
                   {dashboardData.recentApplications.length > 0 ? (
-                    dashboardData.recentApplications.map((application) => (
+                    dashboardData.recentApplications.map((application: any) => (
                       <li key={application.id}>
                         <div className="px-4 py-4 sm:px-6">
                           <div className="flex items-center justify-between">
@@ -609,14 +357,15 @@ export default function EmployerDashboard() {
                               </div>
                             </div>
                             <div className="ml-2 flex-shrink-0 flex">
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${application.status === 'pending'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : application.status === 'approved'
-                                  ? 'bg-green-100 text-green-800'
-                                  : application.status === 'rejected'
-                                    ? 'bg-red-100 text-red-800'
-                                    : 'bg-gray-100 text-gray-800'
-                                }`}>
+                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                application.status === 'pending'
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : application.status === 'approved'
+                                    ? 'bg-green-100 text-green-800'
+                                    : application.status === 'rejected'
+                                      ? 'bg-red-100 text-red-800'
+                                      : 'bg-gray-100 text-gray-800'
+                              }`}>
                                 {application.status}
                               </span>
                             </div>
