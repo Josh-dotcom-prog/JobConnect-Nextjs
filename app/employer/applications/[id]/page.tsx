@@ -382,7 +382,13 @@ export default function ApplicationDetailPage() {
                             </Card>
                         </div>
                     </TabsContent>
+                    <Button variant="outline" size="sm" className="mr-6 bg-green-500 text-white" onClick={openNotesModal}>
+                        Accept Application
+                    </Button>
 
+                    <Button variant="outline" size="sm" className="bg-red-500 text-white" onClick={() => handleStatusChange("rejected")}>
+                        Reject Application
+                    </Button>
                 </Tabs>
             </div>
         </div>
