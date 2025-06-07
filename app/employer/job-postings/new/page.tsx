@@ -1,14 +1,13 @@
 "use client"
-
 import { useState } from "react"
+import axios from 'axios'; // <-- Added axios import
 import { Briefcase, MapPin, FileText, DollarSign, Send, X } from "lucide-react"
 import Navbar from "@/components/navigation/navbar"
-
 
 export default function CreateJobForm() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [formData, setFormData] = useState({
-        employer_id: 0,
+        employer_id: 1,
         title: "",
         job_type: "full_time",
         base_salary: 0,
@@ -17,6 +16,28 @@ export default function CreateJobForm() {
         requirements: "",
         location: ""
     })
+
+    // Function to send job data to backend
+    async function createJob(jobData: { base_salary: number; employer_id: number; title: string; job_type: string; description: string; responsibilities: string; requirements: string; location: string; }) {
+        try {
+            const response = await axios.post(
+                'http://127.0.0.1:8000/Jobs/create',
+                jobData,
+                {
+                    headers: {
+                        'accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log("Job created:", response.data);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+          // console.error('Error creating job:', error.response ? error.response.data : error.message);
+            throw error;
+        }
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target
@@ -31,16 +52,18 @@ export default function CreateJobForm() {
         setIsSubmitting(true)
 
         try {
-            // Format the data before sending
+            // Format numeric fields
             const submissionData = {
                 ...formData,
                 base_salary: Number(formData.base_salary),
                 employer_id: Number(formData.employer_id)
-            }
+            };
 
-            console.log("Submitting:", submissionData)
-            await new Promise(resolve => setTimeout(resolve, 1000))
+            // Submit data via axios
+            await createJob(submissionData);
+
             alert("Job created successfully!")
+
             // Reset form after successful submission
             setFormData({
                 employer_id: 0,
@@ -51,17 +74,18 @@ export default function CreateJobForm() {
                 responsibilities: "",
                 requirements: "",
                 location: ""
-            })
+            });
+
         } catch (error) {
-            alert("Error creating job")
+            alert("Failed to create job. Please check the console for details.")
         } finally {
             setIsSubmitting(false)
         }
     }
+
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <Navbar userType="employer" activePage="#" />
-
             <div className="max-w-3xl mx-auto mt-12">
                 <div className="bg-white shadow rounded-lg overflow-hidden">
                     {/* Form Header */}
@@ -76,12 +100,10 @@ export default function CreateJobForm() {
                             </button>
                         </div>
                     </div>
-
                     {/* Main Form */}
                     <form onSubmit={handleSubmit} className="space-y-6 p-6">
                         {/* Employer ID (hidden in production, would come from auth) */}
                         <input type="hidden" name="employer_id" value={formData.employer_id} />
-
                         {/* Job Title */}
                         <div>
                             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
@@ -100,7 +122,6 @@ export default function CreateJobForm() {
                                 />
                             </div>
                         </div>
-
                         {/* Location and Job Type */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Location */}
@@ -124,7 +145,6 @@ export default function CreateJobForm() {
                                     />
                                 </div>
                             </div>
-
                             {/* Job Type */}
                             <div>
                                 <label htmlFor="job_type" className="block text-sm font-medium text-gray-700 mb-1">
@@ -145,7 +165,6 @@ export default function CreateJobForm() {
                                 </select>
                             </div>
                         </div>
-
                         {/* Salary */}
                         <div>
                             <label htmlFor="base_salary" className="block text-sm font-medium text-gray-700 mb-1">
@@ -167,7 +186,6 @@ export default function CreateJobForm() {
                                 />
                             </div>
                         </div>
-
                         {/* Job Description */}
                         <div>
                             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
@@ -189,7 +207,6 @@ export default function CreateJobForm() {
                                 />
                             </div>
                         </div>
-
                         {/* Responsibilities */}
                         <div>
                             <label htmlFor="responsibilities" className="block text-sm font-medium text-gray-700 mb-1">
@@ -205,7 +222,6 @@ export default function CreateJobForm() {
                                 placeholder="List the main responsibilities of the role (bullet points work well)..."
                             />
                         </div>
-
                         {/* Requirements */}
                         <div>
                             <label htmlFor="requirements" className="block text-sm font-medium text-gray-700 mb-1">
@@ -222,7 +238,6 @@ export default function CreateJobForm() {
                                 placeholder="List the required skills, qualifications, and experience..."
                             />
                         </div>
-
                         {/* Form Actions */}
                         <div className="flex justify-end pt-6 border-t border-gray-200">
                             <button
