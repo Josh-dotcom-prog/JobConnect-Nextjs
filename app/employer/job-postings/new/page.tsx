@@ -18,7 +18,7 @@ export default function CreateJobForm() {
         location: ""
     })
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target
         setFormData(prev => ({
             ...prev,
@@ -26,7 +26,7 @@ export default function CreateJobForm() {
         }))
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setIsSubmitting(true)
 
@@ -58,7 +58,6 @@ export default function CreateJobForm() {
             setIsSubmitting(false)
         }
     }
-
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <Navbar userType="employer" activePage="#" />

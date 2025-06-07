@@ -4,258 +4,9 @@ import axios from "axios"
 import Link from "next/link"
 import Navbar from "@/components/navigation/navbar"
 
-
-// Made a change
-// Your actual backend data
-const backendData = {
-  "jobs": [
-    {
-      "id": 1,
-      "employer_id": 1,
-      "title": "Software Engineer",
-      "job_type": "full_time",
-      "base_salary": 3500000,
-      "description": "Develop and maintain backend services.",
-      "responsibilities": "Build APIs, integrate databases, write clean code.",
-      "requirements": "Bachelor's in Computer Science, 2+ years experience.",
-      "location": "Kampala",
-      "is_active": true,
-      "created_at": "2025-06-07T08:54:19.664940",
-      "updated_at": "2025-06-07T08:54:19.664949"
-    },
-    {
-      "id": 2,
-      "employer_id": 1,
-      "title": "Data Analyst",
-      "job_type": "contract",
-      "base_salary": 2500000,
-      "description": "Interpret data and produce actionable insights.",
-      "responsibilities": "Use SQL and Python to process data.",
-      "requirements": "Degree in Statistics or Computer Science.",
-      "location": "Remote",
-      "is_active": true,
-      "created_at": "2025-06-07T08:54:43.220116",
-      "updated_at": "2025-06-07T08:54:43.220122"
-    },
-    {
-      "id": 3,
-      "employer_id": 1,
-      "title": "UI/UX Designer",
-      "job_type": "part_time",
-      "base_salary": 1800000,
-      "description": "Design user-friendly interfaces.",
-      "responsibilities": "Create wireframes and prototypes.",
-      "requirements": "Experience with Figma or Adobe XD.",
-      "location": "Kampala",
-      "is_active": true,
-      "created_at": "2025-06-07T08:55:05.731490",
-      "updated_at": "2025-06-07T08:55:05.731498"
-    },
-    {
-      "id": 4,
-      "employer_id": 1,
-      "title": "Technical Writer",
-      "job_type": "contract",
-      "base_salary": 1200000,
-      "description": "Write documentation and user manuals.",
-      "responsibilities": "Collaborate with devs to explain APIs.",
-      "requirements": "Excellent writing skills and tech background.",
-      "location": "Remote",
-      "is_active": true,
-      "created_at": "2025-06-07T08:56:45.118709",
-      "updated_at": "2025-06-07T08:56:45.118714"
-    },
-    {
-      "id": 5,
-      "employer_id": 1,
-      "title": "IT Support Specialist",
-      "job_type": "full_time",
-      "base_salary": 1500000,
-      "description": "Provide technical support to staff.",
-      "responsibilities": "Resolve hardware and software issues.",
-      "requirements": "Diploma in IT or related field.",
-      "location": "Gulu",
-      "is_active": true,
-      "created_at": "2025-06-07T08:57:06.134303",
-      "updated_at": "2025-06-07T08:57:06.134310"
-    }
-  ],
-  "applications": [
-    {
-      "id": 1,
-      "jobseeker_id": 1,
-      "status": "pending",
-      "created_at": "2025-06-07T09:00:57.210896",
-      "updated_at": "2025-06-07T09:00:57.210902"
-    },
-    {
-      "id": 2,
-      "jobseeker_id": 2,
-      "status": "pending",
-      "created_at": "2025-06-07T09:01:25.342300",
-      "updated_at": "2025-06-07T09:01:25.342308"
-    },
-    {
-      "id": 3,
-      "jobseeker_id": 3,
-      "status": "pending",
-      "created_at": "2025-06-07T09:01:32.598621",
-      "updated_at": "2025-06-07T09:01:32.598628"
-    },
-    {
-      "id": 4,
-      "jobseeker_id": 4,
-      "status": "pending",
-      "created_at": "2025-06-07T09:01:38.570974",
-      "updated_at": "2025-06-07T09:01:38.570982"
-    },
-    {
-      "id": 5,
-      "jobseeker_id": 5,
-      "status": "pending",
-      "created_at": "2025-06-07T09:01:45.183652",
-      "updated_at": "2025-06-07T09:01:45.183659"
-    },
-    {
-      "id": 6,
-      "jobseeker_id": 6,
-      "status": "pending",
-      "created_at": "2025-06-07T09:01:50.443840",
-      "updated_at": "2025-06-07T09:01:50.443847"
-    },
-    {
-      "id": 7,
-      "jobseeker_id": 7,
-      "status": "pending",
-      "created_at": "2025-06-07T09:01:59.515742",
-      "updated_at": "2025-06-07T09:01:59.515750"
-    },
-    {
-      "id": 8,
-      "jobseeker_id": 8,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:06.803170",
-      "updated_at": "2025-06-07T09:02:06.803177"
-    },
-    {
-      "id": 9,
-      "jobseeker_id": 8,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:14.552189",
-      "updated_at": "2025-06-07T09:02:14.552219"
-    },
-    {
-      "id": 10,
-      "jobseeker_id": 7,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:26.223049",
-      "updated_at": "2025-06-07T09:02:26.223057"
-    },
-    {
-      "id": 11,
-      "jobseeker_id": 6,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:33.577849",
-      "updated_at": "2025-06-07T09:02:33.577855"
-    },
-    {
-      "id": 12,
-      "jobseeker_id": 5,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:42.459271",
-      "updated_at": "2025-06-07T09:02:42.459280"
-    },
-    {
-      "id": 13,
-      "jobseeker_id": 4,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:48.797368",
-      "updated_at": "2025-06-07T09:02:48.797373"
-    },
-    {
-      "id": 14,
-      "jobseeker_id": 3,
-      "status": "pending",
-      "created_at": "2025-06-07T09:02:55.089508",
-      "updated_at": "2025-06-07T09:02:55.089513"
-    },
-    {
-      "id": 15,
-      "jobseeker_id": 2,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:01.299448",
-      "updated_at": "2025-06-07T09:03:01.299457"
-    },
-    {
-      "id": 16,
-      "jobseeker_id": 1,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:06.317113",
-      "updated_at": "2025-06-07T09:03:06.317120"
-    },
-    {
-      "id": 17,
-      "jobseeker_id": 1,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:11.955617",
-      "updated_at": "2025-06-07T09:03:11.955622"
-    },
-    {
-      "id": 18,
-      "jobseeker_id": 2,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:32.240851",
-      "updated_at": "2025-06-07T09:03:32.240858"
-    },
-    {
-      "id": 19,
-      "jobseeker_id": 3,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:40.229324",
-      "updated_at": "2025-06-07T09:03:40.229330"
-    },
-    {
-      "id": 20,
-      "jobseeker_id": 4,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:47.041170",
-      "updated_at": "2025-06-07T09:03:47.041177"
-    },
-    {
-      "id": 21,
-      "jobseeker_id": 5,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:53.441371",
-      "updated_at": "2025-06-07T09:03:53.441378"
-    },
-    {
-      "id": 22,
-      "jobseeker_id": 6,
-      "status": "pending",
-      "created_at": "2025-06-07T09:03:59.269373",
-      "updated_at": "2025-06-07T09:03:59.269381"
-    },
-    {
-      "id": 23,
-      "jobseeker_id": 7,
-      "status": "pending",
-      "created_at": "2025-06-07T09:04:07.083494",
-      "updated_at": "2025-06-07T09:04:07.083500"
-    },
-    {
-      "id": 24,
-      "jobseeker_id": 8,
-      "status": "pending",
-      "created_at": "2025-06-07T09:04:12.849835",
-      "updated_at": "2025-06-07T09:04:12.849843"
-    }
-  ]
-}
-
-// Helper functions to process your backend data
-const processBackendData = (data: { jobs?: any[]; applications?: any[] }) => {
-  const jobs = data.jobs || []
-  const applications = data.applications || []
+// Helper function to process backend data
+const processBackendData = (data: any) => {
+  const applicants = data.applicants || []
 
   // Calculate stats
   const totalApplications = applicants.length
@@ -408,14 +159,6 @@ export default function EmployerDashboard() {
                 <p className="mt-1 text-sm text-gray-600">Welcome back, {dashboardData.companyName || 'Passions Hotel'}.</p>
               </div>
               <div className="mt-4 flex md:mt-0 md:ml-4">
-                <Link href="/employer/company-profile">
-                  <button
-                    type="button"
-                    className="inline-flex items-center px-4 py-2 border border-yellow-400 rounded-md shadow-sm text-sm font-medium text-yellow-400 bg-white hover:bg-yellow-50"
-                  >
-                    Edit Profile
-                  </button>
-                </Link>
                 <Link href="/employer/job-postings/new">
                   <button
                     type="button"
@@ -606,12 +349,12 @@ export default function EmployerDashboard() {
                             </div>
                             <div className="ml-2 flex-shrink-0 flex">
                               <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${application.status === 'pending'
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : application.status === 'approved'
-                                    ? 'bg-green-100 text-green-800'
-                                    : application.status === 'rejected'
-                                      ? 'bg-red-100 text-red-800'
-                                      : 'bg-gray-100 text-gray-800'
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : application.status === 'approved'
+                                  ? 'bg-green-100 text-green-800'
+                                  : application.status === 'rejected'
+                                    ? 'bg-red-100 text-red-800'
+                                    : 'bg-gray-100 text-gray-800'
                                 }`}>
                                 {application.status}
                               </span>
