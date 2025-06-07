@@ -1,53 +1,69 @@
+"use client"
+import { useState, useEffect } from "react"
 import Link from "next/link"
+import axios from "axios"
 import Navbar from "@/components/navigation/navbar"
 import JobCard from "@/components/jobs/job-card"
 
-// Mock data for recommended jobs
-const RECOMMENDED_JOBS = [
-  {
-    id: "1",
-    title: "Frontend Developer",
-    company: "TechCorp Inc.",
-    location: "San Francisco, CA (Remote)",
-    jobType: "Full-time",
-    salary: "$80,000 - $100,000",
-    description:
-      "We're looking for a talented Frontend Developer to join our team. You'll be responsible for building responsive web applications using modern frameworks.",
-    postedDate: "2 days ago",
-    skills: ["React", "JavaScript", "CSS"],
-    logoUrl: "/placeholder.svg?height=40&width=40",
-    isNew: true,
-  },
-  {
-    id: "2",
-    title: "UX/UI Designer",
-    company: "DesignHub Co.",
-    location: "New York, NY",
-    jobType: "Full-time",
-    salary: "$70,000 - $90,000",
-    description:
-      "Join our creative team as a UX/UI Designer. You'll create beautiful, intuitive interfaces for our clients across various industries.",
-    postedDate: "1 week ago",
-    skills: ["Figma", "Adobe XD", "Sketch"],
-    logoUrl: "/placeholder.svg?height=40&width=40",
-    isFeatured: true,
-  },
-  {
-    id: "3",
-    title: "Data Analyst Intern",
-    company: "DataViz Analytics",
-    location: "Chicago, IL (Hybrid)",
-    jobType: "Internship",
-    salary: "$20 - $25/hour",
-    description:
-      "Great opportunity for students to gain hands-on experience in data analysis. You'll work with our team to analyze data and create insightful reports.",
-    postedDate: "3 days ago",
-    skills: ["SQL", "Excel", "Python"],
-    logoUrl: "/placeholder.svg?height=40&width=40",
-  },
-]
-
 export default function JobSeekerDashboard() {
+  const [recommendedJobs, setRecommendedJobs] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // Fetch recommended jobs from backend
+  useEffect(() => {
+    const fetchRecommendedJobs = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/Jobs/all', {
+          headers: {
+            'accept': 'application/json'
+          }
+        })
+
+        // Map backend data to frontend format expected by JobCard
+        const mappedJobs = response.data.map((job: any) => ({
+          id: job.id.toString(),
+          title: job.title,
+          company: `Company ${job.employer_id}`, // fallback if no company name
+          location: job.location,
+          jobType: job.job_type.replace('_', ' '), // e.g., full_time → full time
+          salary: `$${(job.base_salary / 1000).toFixed(0)}k/year`, // format as needed
+          description: job.description,
+          responsibilities: job.responsibilities,
+          requirements: job.requirements,
+          postedDate: formatDate(job.created_at),
+          skills: ["Development", "Teamwork"], // fallback or fetch from backend
+          logoUrl: "/placeholder.svg?height=40&width=40",
+          isNew: false,
+        }))
+
+        // Show only top 3 jobs for dashboard
+        setRecommendedJobs(mappedJobs.slice(0, 3))
+
+      } catch (err) {
+        console.error("Failed to load jobs:", err)
+        setError("Could not load job recommendations.")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchRecommendedJobs()
+  }, [])
+
+  // Format date as "X days ago"
+  const formatDate = (dateString: string): string => {
+    const now = new Date()
+    const jobDate = new Date(dateString)
+    const diffDays = Math.floor((now.getTime() - jobDate.getTime()) / (1000 * 3600 * 24))
+
+    if (diffDays === 0) return "today"
+    if (diffDays === 1) return "1 day ago"
+    if (diffDays < 7) return `${diffDays} days ago`
+    const weeks = Math.floor(diffDays / 7)
+    return `${weeks} week${weeks > 1 ? 's' : ''} ago`
+  }
+
   return (
     <div className="bg-gray-50">
       <Navbar userType="jobSeeker" activePage="dashboard" />
@@ -144,74 +160,22 @@ export default function JobSeekerDashboard() {
               View all
             </Link>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {RECOMMENDED_JOBS.map((job) => (
-              <JobCard key={job.id} {...job} />
-            ))}
-          </div>
+
+          {loading ? (
+            <p>Loading recommended jobs...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : recommendedJobs.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {recommendedJobs.map((job) => (
+                <JobCard key={job.id} {...job} />
+              ))}
+            </div>
+          ) : (
+            <p>No recommended jobs found.</p>
+          )}
         </div>
 
-        {/* Recent Activity */}
-        {/* <div className="mt-8 px-4 sm:px-0">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Recent Activity</h2>
-          <div className="bg-white shadow overflow-hidden sm:rounded-md">
-            <ul className="divide-y divide-gray-200">
-              <li>
-                <div className="px-4 py-4 sm:px-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0">
-                        <i className="fas fa-check-circle text-green-500 text-lg"></i>
-                      </div>
-                      <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900">
-                          Application for <span className="text-blue-600">Frontend Developer</span> at TechCorp Inc.
-                          was submitted
-                        </p>
-                        <p className="text-sm text-gray-500">2 days ago</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="px-4 py-4 sm:px-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0">
-                        <i className="fas fa-eye text-blue-500 text-lg"></i>
-                      </div>
-                      <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900">
-                          You viewed <span className="text-blue-600">UX/UI Designer</span> at DesignHub Co.
-                        </p>
-                        <p className="text-sm text-gray-500">3 days ago</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="px-4 py-4 sm:px-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0">
-                        <i className="fas fa-calendar-check text-purple-500 text-lg"></i>
-                      </div>
-                      <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900">
-                          Interview scheduled for <span className="text-blue-600">Data Analyst</span> at DataViz
-                          Analytics
-                        </p>
-                        <p className="text-sm text-gray-500">1 week ago</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div> */}
       </main>
     </div>
   )
