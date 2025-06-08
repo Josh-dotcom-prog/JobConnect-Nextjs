@@ -31,7 +31,7 @@ const processBackendData = (data: any) => {
 
   // Format salary (assuming it's in Uganda Shillings)
   const formatSalary = (salary: number) => {
-    return `UGX ${(salary / 1000000).toFixed(1)}M`
+    return `UGX {(salary / 1000000).toFixed(1)}M`
   }
 
   // Get job icon based on title
