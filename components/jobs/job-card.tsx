@@ -54,16 +54,6 @@ export default function JobCard({
             </div>
           </div>
           <div className="flex flex-col items-end">
-            {/* {isNew && (
-              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                New
-              </span>
-            )}
-            {isFeatured && (
-              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                Featured
-              </span>
-            )} */}
             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 mt-1">
               {jobType}
             </span>
